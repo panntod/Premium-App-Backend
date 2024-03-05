@@ -1,167 +1,139 @@
-const userModel = require(`..db/models/index`).user;
+const userModel = require(`../db/models/index`).user;
 const { Op } = require(`sequelize`);
-const { GeneratePasswword, ComparePass } = require("../helpers/passhelper");
+// const { GeneratePasswword, ComparePass } = require("../helpers/passhelper");
+const { ResponseData } = require("../helpers/ResponseHelper");
 
 exports.getAllUser = async (request, response) => {
-  /** call findAll() to get all data */
-  let users = await userModel.findAll();
-  return response.json({
-    success: true,
-    data: users,
-    message: `All users have been loaded`,
-  });
+  try {
+    let users = await userModel.findAll();
+    return response
+      .status(200)
+      .send(ResponseData(true, "Sukses mengambil seluruh user", null, users));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
 };
 
 exports.findUser = async (request, response) => {
-  /** define keyword to find data */
-  let keyword = request.body.key;
-  /** call findAll() within where clause and operation
-   * to find data based on keyword */
-  let users = await userModel.findAll({
-    where: {
-      [Op.or]: [
-        { userID: { [Op.substring]: keyword } },
-        { firstname: { [Op.substring]: keyword } },
-        { lastname: { [Op.substring]: keyword } },
-        { email: { [Op.substring]: keyword } },
-        { role: { [Op.substring]: keyword } },
-      ],
-    },
-  });
-  return response.json({
-    success: true,
-    data: users,
-    message: `All Users have been loaded`,
-  });
+  try {
+    let keyword = request.body.key;
+    let users = await userModel.findAll({
+      where: {
+        [Op.or]: [
+          { userID: { [Op.substring]: keyword } },
+          { username: { [Op.substring]: keyword } },
+          { nama: { [Op.substring]: keyword } },
+          { role: { [Op.substring]: keyword } },
+        ],
+      },
+    });
+    return response
+      .status(200)
+      .send(ResponseData(true, "Sukses mengambil user", null, users));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
 };
 
 exports.addUser = async (request, response) => {
-  let newUser = {
-    username: request.body.username,
-    nama: request.body.nama,
-    password: request.body.password,
-    role: request.body.role,
-  };
-  userModel
-    .create(newUser)
-    .then((result) => {
-      return response.json({
-        success: true,
-        data: result,
-        message: `New user has been inserted`,
-      });
-    })
-    .catch((error) => {
-      /** if insert's process fail */
-      return response.json({
-        success: false,
-        message: error.message,
-      });
-    });
+  try {
+    let newUser = {
+      username: request.body.username,
+      nama: request.body.nama,
+      password: request.body.password,
+      role: request.body.role,
+    };
+
+    await userModel.create(newUser);
+
+    return response
+      .status(201)
+      .send(ResponseData(true, "Sukses membuat data user", null, newUser));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
 };
 
-exports.updateUser = (request, response) => {
-  let dataUser = {
-    firstname: request.body.firstname,
-    lastname: request.body.lastname,
-    email: request.body.email,
-    role: request.body.role,
-  };
-  let userID = request.params.id;
-  userModel
-    .update(dataUser, { where: { userID: userID } })
-    .then((result) => {
-      return response.json({
-        success: true,
-        message: `Data user has been updated`,
-      });
-    })
-    .catch((error) => {
-      return response.json({
-        success: false,
-        message: error.message,
-      });
-    });
+exports.updateUser = async (request, response) => {
+  try {
+    let userID = request.params.id;
+    let newUser = {
+      username: request.body.username,
+      nama: request.body.nama,
+      role: request.body.role,
+    };
+    await userModel.update(newUser, { where: { userID: userID } });
+    return response
+      .status(201)
+      .send(ResponseData(true, "Sukses update data user", null, newUser));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
 };
 
-exports.updatePassAdmin = async (request, response) => {
-  let newPass = md5(request.body.newPass);
-  let userID = request.params.id;
-  userModel
-    .update({ password: newPass }, { where: { userID: userID } })
-    .then((result) => {
-      return response.json({
-        success: true,
-        result: result,
-        message: `Password has been updated`,
-      });
-    })
-    .catch((error) => {
-      return response.json({
-        success: false,
-        message: error.message,
-      });
-    });
-};
-
-exports.updatePass = async (request, response) => {
+exports.resetPassword = async (request, response) => {
   let { email, password, newPass } = request.body;
   try {
     const findUser = await userModel.findOne({
       where: { email: email },
     });
     if (!findUser) {
-      return response.status(404).json({
-        success: false,
-        status: result,
-        message: "user gk ada",
-      });
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
     }
 
     const isValidPassword = await ComparePass(password, findUser.password);
 
     if (!isValidPassword) {
-      return response.status(401).json({
-        success: false,
-        status: "unauthorized",
-        message: "wrong",
-      });
+      return response
+        .status(404)
+        .send(ResponseData(false, "password gk vailid", null, null));
     }
     const hashedPass = await GeneratePasswword(newPass);
     const result = await userModel.update(
       { password: hashedPass },
       { where: { email: email } }
     );
-    return response.status(201).json({
-      success: true,
-      message: "updated",
-    });
+    return response
+      .status(201)
+      .send(ResponseData(true, "Sukses update password", null, null));
   } catch (error) {
-    return response.json({
-      success: false,
-      message: error.message,
-    });
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
   }
 };
 
-exports.deleteUser = (request, response) => {
-  /** define id user that will be update */
-  let userID = request.params.id;
-  /** execute delete data based on defined id user */
-  userModel
-    .destroy({ where: { userID: userID } })
-    .then((result) => {
-      /** if update's process success */
-      return response.json({
-        success: true,
-        message: `Data user has been deleted`,
-      });
-    })
-    .catch((error) => {
-      /** if update's process fail */
-      return response.json({
-        success: false,
-        message: error.message,
-      });
-    });
+exports.deleteUser = async (request, response) => {
+  try {
+    let userID = request.params.id;
+    const result = await userModel.destroy({ where: { userID: userID } });
+    if (!result) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
+    }
+    return response
+      .status(201)
+      .send(ResponseData(true, "Sukses menghapus data user", null, null));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
 };

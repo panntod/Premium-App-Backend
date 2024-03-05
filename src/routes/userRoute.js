@@ -7,11 +7,10 @@ const userController = require(`../controller/userController`);
 // const { IsUser, IsAdmin } = require("../middlewares/role-validation");
 
 app.get("/", userController.getAllUser);
-// app.get("/:key", authorize, IsAdmin, userController.findUser);
+app.get("/find", userController.findUser);
 app.post("/", userController.addUser);
-// app.put("/:id", authorize, IsUser, validateUser, userController.updateUser);
+app.put("/:id", userController.updateUser);
 // app.patch("/", userController.updatePass);
-// app.put("/adminReset/:id", userController.updatePassAdmin);
-// app.delete("/:id", authorize, IsAdmin, userController.deleteUser);
+app.delete("/:id", userController.deleteUser);
 
 module.exports = app;
