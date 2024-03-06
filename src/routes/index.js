@@ -5,8 +5,10 @@ const userRoute = require("./userRoute");
 const appRoute = require("./aplikasiRoute");
 const tierRoute = require("./tierRoute");
 const transaksiRoute = require("./transaksiRoute");
+const { logMiddleware } = require("../middlewares/log");
 const authorization = require("../middlewares/authValidation");
 
+app.use(logMiddleware)
 app.use("/user", userRoute);
 app.use("/app", appRoute);
 app.use("/tier", tierRoute);
