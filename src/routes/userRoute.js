@@ -7,7 +7,7 @@ const userController = require(`../controller/userController`);
 // const { IsUser, IsAdmin } = require("../middlewares/role-validation");
 
 app.get("/", userController.getAllUser);
-app.get("/find", userController.findUser);
+app.post("/find", userController.findUser);
 app.post("/", userController.addUser);
 app.put("/:id", userController.updateUser);
 // app.patch("/", userController.updatePass);

@@ -5,14 +5,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.tier, {
-        foreignKey:"tierID", as:"tierAplikasi"
-      })
+        foreignKey: "tierID",
+        as: "tierAplikasi",
+      });
       this.hasMany(models.detail_transaksi, {
-        foreignKey:"aplikasiID", as:"detailTransaksiAplikasi"
-      })
+        foreignKey: "aplikasiID",
+        as: "detailTransaksiAplikasi",
+      });
       this.hasMany(models.transaksi, {
-        foreignKey:"aplikasiID", as:"transaksiAplikasi"
-      })
+        foreignKey: "aplikasiID",
+        as: "transaksiAplikasi",
+      });
     }
   }
   aplikasi.init(
@@ -23,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
       },
       nama: DataTypes.STRING,
-      tier: DataTypes.STRING,
+      id_tier: DataTypes.BIGINT,
       image: DataTypes.STRING,
       deskripsi: DataTypes.STRING,
     },

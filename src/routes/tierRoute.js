@@ -7,7 +7,7 @@ const tierController = require(`../controller/tierController`);
 // const { IsUser, IsAdmin } = require("../middlewares/role-validation");
 
 app.get("/", tierController.getAllTier);
-app.get("/find/:key", tierController.findTier);
+app.post("/find/:tierID", tierController.findTier);
 app.post("/", tierController.addTier);
 app.put("/:id", tierController.updateTier);
 app.delete("/:id", tierController.deleteTier);

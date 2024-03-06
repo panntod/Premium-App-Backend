@@ -18,7 +18,7 @@ exports.getAllTier = async (request, response) => {
 
 exports.findTier = async (request, response) => {
   try {
-    let keyword = request.params.key;
+    let keyword = request.params.tierID;
     let tiers = await tierModel.findAll({
       where: {
         tierID: keyword,
