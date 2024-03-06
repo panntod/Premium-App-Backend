@@ -6,14 +6,13 @@ const {
   registerValidation,
   resetPasswordValidation,
 } = require("../middlewares/userValidation");
-// const { authorize } = require("../controllers/auth.controller");
-// const { IsUser, IsAdmin } = require("../middlewares/role-validation");
+const { adminOnly, authorization } = require("../middlewares/authValidation");
 
-app.get("/", userController.getAllUser);
-app.post("/find", userController.findUser);
+app.get("/", authorization, adminOnly, userController.getAllUser);
+app.post("/find", authorization, userController.findUser);
 app.post("/", registerValidation, userController.addUser);
-app.put("/:id", registerValidation, userController.updateUser);
+app.put("/:id", authorization, adminOnly, registerValidation, userController.updateUser);
 app.patch("/", resetPasswordValidation, userController.resetPassword);
-app.delete("/:id", userController.deleteUser);
+app.delete("/:id", authorization, adminOnly, userController.deleteUser);
 
 module.exports = app;

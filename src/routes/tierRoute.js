@@ -1,15 +1,14 @@
 const express = require(`express`);
 const app = express();
 app.use(express.json());
+
 const tierController = require(`../controller/tierController`);
-// const { validateuser } = require("../middlewares/user-validation");
-// const { authorize } = require("../controllers/auth.controller");
-// const { IsUser, IsAdmin } = require("../middlewares/role-validation");
+const { adminOnly, authorization} = require("../middlewares/authValidation")
 
 app.get("/", tierController.getAllTier);
-app.post("/find/:tierID", tierController.findTier);
-app.post("/", tierController.addTier);
-app.put("/:id", tierController.updateTier);
-app.delete("/:id", tierController.deleteTier);
+app.post("/find/:tierID", authorization, tierController.findTier);
+app.post("/", authorization, adminOnly, tierController.addTier);
+app.put("/:id", authorization, adminOnly, tierController.updateTier);
+app.delete("/:id", authorization, adminOnly, tierController.deleteTier);
 
 module.exports = app;
