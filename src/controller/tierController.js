@@ -1,4 +1,4 @@
-const tierModel = require("../db/models/index").tier;
+const { tier: tierModel } = require("../db/models/index");
 const { ResponseData } = require("../helpers/ResponseHelper");
 
 exports.getAllTier = async (request, response) => {
@@ -6,7 +6,9 @@ exports.getAllTier = async (request, response) => {
     let tiers = await tierModel.findAll();
     return response
       .status(200)
-      .send(ResponseData(true, "Successfully accessed all tiers", null, tiers));
+      .send(
+        ResponseData(true, "Sukses mengambil seluruh data tier", null, tiers)
+      );
   } catch (error) {
     console.log(error);
     return response
@@ -17,15 +19,15 @@ exports.getAllTier = async (request, response) => {
 
 exports.findTier = async (request, response) => {
   try {
-    let keyword = request.params.tierID;
+    let tierID = request.params.tierID;
     let tiers = await tierModel.findAll({
       where: {
-        tierID: keyword,
+        tierID: tierID,
       },
     });
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil user", null, tiers));
+      .send(ResponseData(true, "Sukses mendapatkan data tier", null, tiers));
   } catch (error) {
     console.log(error);
     return response
@@ -64,7 +66,7 @@ exports.updateTier = async (request, response) => {
     await tierModel.update(newTier, { where: { tierID: tierID } });
     return response
       .status(201)
-      .send(ResponseData(true, "Sukses update data user", null, newTier));
+      .send(ResponseData(true, "Sukses update data tier", null, newTier));
   } catch (error) {
     console.log(error);
     return response
@@ -80,11 +82,11 @@ exports.deleteTier = async (request, response) => {
     if (!result) {
       return response
         .status(404)
-        .send(ResponseData(false, "User tidak ditemukan", null, null));
+        .send(ResponseData(false, "Tier tidak ditemukan", null, null));
     }
     return response
       .status(201)
-      .send(ResponseData(true, "Sukses menghapus data user", null, null));
+      .send(ResponseData(true, "Sukses menghapus data tier", null, null));
   } catch (error) {
     console.log(error);
     return response

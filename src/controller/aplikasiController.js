@@ -5,7 +5,7 @@ const {
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs").promises
 const upload = require("./uploadImage").single(`image`);
 
 exports.getAllApp = async (request, response) => {
@@ -49,7 +49,7 @@ exports.findApp = async (request, response) => {
     if (!aplikasi) {
       return response
         .status(404)
-        .send(ResponseData(true, "app tidak ditemukan", null, null));
+        .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
     return response
       .status(200)
@@ -66,12 +66,15 @@ exports.addAplikasi = async (request, response) => {
   try {
     upload(request, response, async (error) => {
       if (error) {
-        return response.json({ message: error });
+        return response
+        .status(500)
+        .send(ResponseData(false, error.message, error, null));
       }
+      
       if (!request.file) {
         return response
           .status(500)
-          .send(ResponseData(false, "gambar tidak masuk", error, null));
+          .send(ResponseData(false, "Gambar tidak ditemukan", error, null));
       }
 
       let newApp = {
@@ -80,6 +83,16 @@ exports.addAplikasi = async (request, response) => {
         image: request.file.filename,
         deskripsi: request.body.deskripsi,
       };
+
+      const tierAplikasi = await tierModel.findOne({
+        where: { tierID: newApp.tierID },
+      });
+
+      if (!tierAplikasi) {
+        return response
+          .status(404)
+          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
+      }
 
       await aplikasiModel.create(newApp);
 
@@ -103,29 +116,54 @@ exports.updateAplikasi = async (request, response) => {
           .status(500)
           .send(ResponseData(false, error.message, error, null));
       }
-      let aplikasiID = request.params.id;
-      let dataApp = {
+
+      const aplikasiID = request.params.id;
+      const newApp = {
         nama: request.body.nama,
         tierID: request.body.tierID,
         deskripsi: request.body.deskripsi,
       };
+
       if (request.file) {
         const selectedApp = await aplikasiModel.findOne({
           where: { aplikasiID: aplikasiID },
         });
-        const oldImage = selectedApp.image;
-        const pathImage = path.join(__dirname, `../images`, oldImage);
-        if (fs.existsSync(pathImage)) {
-          fs.unlink(pathImage, (error) => console.log(error));
+
+        if (selectedApp) {
+          const oldImage = selectedApp.image;
+          const pathImage = path.join(__dirname, "../images", oldImage);
+
+          try {
+            await fs.unlink(pathImage);
+          } catch (error) {
+            console.error("Error deleting old image:", error);
+          }
+
+          newApp.image = request.file.filename;
+        } else {
+          return response
+            .status(404)
+            .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
         }
-        dataApp.image = request.file.filename;
       }
-      await aplikasiModel.update(dataApp, {
+
+      const tierAplikasi = await tierModel.findOne({
+        where: { tierID: newApp.tierID },
+      });
+
+      if (!tierAplikasi) {
+        return response
+          .status(404)
+          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
+      }
+
+      await aplikasiModel.update(newApp, {
         where: { aplikasiID: aplikasiID },
       });
+
       return response
         .status(201)
-        .send(ResponseData(true, "Sukses membuat data user", null, dataApp));
+        .send(ResponseData(true, "Sukses membuat data user", null, newApp));
     });
   } catch (error) {
     return response

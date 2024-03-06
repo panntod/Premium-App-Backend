@@ -1,4 +1,4 @@
-const userModel = require(`../db/models/index`).user;
+const { user: userModel } = require(`../db/models/index`);
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const { PasswordHashing } = require("../helpers/PasswordHelper");
@@ -8,7 +8,9 @@ exports.getAllUser = async (request, response) => {
     let users = await userModel.findAll();
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil seluruh user", null, users));
+      .send(
+        ResponseData(true, "Sukses mengambil seluruh data user", null, users)
+      );
   } catch (error) {
     console.log(error);
     return response
