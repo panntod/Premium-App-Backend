@@ -1,6 +1,7 @@
 const express = require(`express`);
 const app = express();
 app.use(express.json());
+
 const aplikasiController = require(`../controller/aplikasiController`);
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 
