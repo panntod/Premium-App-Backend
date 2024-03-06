@@ -2,7 +2,10 @@ const express = require(`express`);
 const app = express();
 app.use(express.json());
 const userController = require(`../controller/userController`);
-const { registerValidation, resetPasswordValidation } = require("../middlewares/userValidation");
+const {
+  registerValidation,
+  resetPasswordValidation,
+} = require("../middlewares/userValidation");
 // const { authorize } = require("../controllers/auth.controller");
 // const { IsUser, IsAdmin } = require("../middlewares/role-validation");
 
