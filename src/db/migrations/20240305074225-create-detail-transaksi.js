@@ -9,21 +9,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.BIGINT,
       },
-      id_transaksi: {
+      transaksiID: {
         type: Sequelize.BIGINT,
-        allowNull:false,
-        references:{
-          model:'transaksis',
-          key:'transaksiID'
-        }
+        allowNull: false,
+        references: {
+          model: "transaksis",
+          key: "transaksiID",
+        },
       },
-      id_aplikasi: {
+      aplikasiID: {
         type: Sequelize.BIGINT,
-        allowNull:false,
-        references:{
-          model:'aplikasis',
-          key:'aplikasiID'
-        }
+        allowNull: false,
+        references: {
+          model: "aplikasis",
+          key: "aplikasiID",
+        },
       },
       harga: {
         type: Sequelize.BIGINT,

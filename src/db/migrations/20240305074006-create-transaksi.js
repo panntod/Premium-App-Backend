@@ -14,21 +14,21 @@ module.exports = {
         type: "TIMESTAMP",
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
-      id_user: {
+      userID: {
         type: Sequelize.BIGINT,
-        allowNull:false,
-        references:{
-          model:'users',
-          key:'userID'
-        }
+        allowNull: false,
+        references: {
+          model: "users",
+          key: "userID",
+        },
       },
-      id_aplikasi: {
+      aplikasiID: {
         type: Sequelize.BIGINT,
-        allowNull:false,
-        references:{
-          model:'aplikasis',
-          key:'aplikasiID'
-        }
+        allowNull: false,
+        references: {
+          model: "aplikasis",
+          key: "aplikasiID",
+        },
       },
       status: {
         type: Sequelize.ENUM("sudah", "belum"),

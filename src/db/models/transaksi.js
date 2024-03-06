@@ -5,11 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.user, {
-        foreignKey:"id_user", as:"userTransaksi"
-      })
+        foreignKey: "userID",
+        as: "userTransaksi",
+      });
       this.belongsTo(models.aplikasi, {
-        foreignKey:"id_aplikasi", as:"aplikasiTransaksi"
-      })
+        foreignKey: "aplikasiID",
+        as: "aplikasiTransaksi",
+      });
     }
   }
   transaksi.init(
@@ -20,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
       },
       tgl: DataTypes.DATE,
-      id_user: DataTypes.INTEGER,
-      id_aplikasi: DataTypes.INTEGER,
+      userID: DataTypes.INTEGER,
+      aplikasiID: DataTypes.INTEGER,
       status: DataTypes.ENUM("sudah", "belum"),
     },
     {

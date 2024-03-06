@@ -6,7 +6,7 @@ const { PasswordCompare } = require("../helpers/PasswordHelper");
 const registerValidationRules = {
   nama: "required|string|max:50",
   role: "required|string|in:user,admin",
-  username: "required|string|max:50|unique:users,username",
+  username: "required|string|max:50",
   password: "required|string|min:8|alpha_num",
   confirmPassword: "required|same:password",
 };
@@ -37,12 +37,7 @@ exports.registerValidation = async (req, res, next) => {
       return res
         .status(400)
         .send(
-          ResponseData(
-            false,
-            "Bad request",
-            "Username Sudah Digunakan",
-            null
-          )
+          ResponseData(false, "Bad request", "Username Sudah Digunakan", null)
         );
     }
 
@@ -102,14 +97,7 @@ exports.resetPasswordValidation = async (req, res, next) => {
     if (!isValidPassword) {
       return res
         .status(404)
-        .send(
-          ResponseData(
-            false,
-            "Incorect Password",
-            "Password salah",
-            null
-          )
-        );
+        .send(ResponseData(false, "Incorect Password", "Password salah", null));
     }
 
     next();

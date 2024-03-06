@@ -12,13 +12,13 @@ module.exports = {
       nama: {
         type: Sequelize.STRING,
       },
-      id_tier: {
+      tierID: {
         type: Sequelize.BIGINT,
-        allowNull:false,
-        references:{
-          model:'tiers',
-          key:'tierID'
-        }
+        allowNull: false,
+        references: {
+          model: "tiers",
+          key: "tierID",
+        },
       },
       image: {
         type: Sequelize.TEXT,
