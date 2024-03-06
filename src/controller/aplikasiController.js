@@ -1,4 +1,4 @@
-const aplikasiModel = require("../db/models/index").aplikasi;
+const {aplikasi: aplikasiModel, tier: tierModel} = require("../db/models/index")
 const { ResponseData } = require("../helpers/ResponseHelper");
 const path = require("path");
 const fs = require("fs");
@@ -6,11 +6,21 @@ const upload = require("./uploadImage").single(`image`);
 
 exports.getAllApp = async (request, response) => {
   try {
-    let apps = await aplikasiModel.findAll();
+    const appsWithTiers = await aplikasiModel.findAll({
+      include: {
+        model: tierModel,
+        as: "tierAplikasi",
+      },
+    });
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh aplikasi", null, apps)
+        ResponseData(
+          true,
+          "Sukses mengambil seluruh aplikasi",
+          null,
+          appsWithTiers
+        )
       );
   } catch (error) {
     console.log(error);
