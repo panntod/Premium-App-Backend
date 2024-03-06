@@ -4,11 +4,13 @@ const app = express();
 const userRoute = require("./userRoute");
 const appRoute = require("./aplikasiRoute");
 const tierRoute = require("./tierRoute");
+const transaksiRoute = require("./transaksiRoute");
 const authorization = require("../middlewares/authValidation");
 
 app.use("/user", userRoute);
 app.use("/app", appRoute);
 app.use("/tier", tierRoute);
+app.use("/transaksi", transaksiRoute);
 app.use("/login", authorization.authentication);
 app.use(express.static(__dirname));
 

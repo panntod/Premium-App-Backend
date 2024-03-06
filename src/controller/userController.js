@@ -31,7 +31,7 @@ exports.findUser = async (request, response) => {
       },
     });
 
-    if(!users){
+    if (!users) {
       return response
         .status(404)
         .send(ResponseData(true, "User tidak ditemukan", null, null));
@@ -82,26 +82,6 @@ exports.updateUser = async (request, response) => {
     return response
       .status(201)
       .send(ResponseData(true, "Sukses update data user", null, newUser));
-  } catch (error) {
-    console.log(error);
-    return response
-      .status(500)
-      .send(ResponseData(false, error.message, error, null));
-  }
-};
-
-exports.resetPassword = async (request, response) => {
-  try {
-    let { username, newPassword } = request.body;
-    const hashedPass = await PasswordHashing(newPassword);
-
-    await userModel.update(
-      { password: hashedPass },
-      { where: { username: username } }
-    );
-    return response
-      .status(201)
-      .send(ResponseData(true, "Sukses update password", null, null));
   } catch (error) {
     console.log(error);
     return response

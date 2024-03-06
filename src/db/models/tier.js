@@ -4,9 +4,13 @@ module.exports = (sequelize, DataTypes) => {
   class tier extends Model {
     static associate(models) {
       // define association here
-      this.hasMany(models.aplikasi, {
+      this.belongsTo(models.aplikasi, {
         foreignKey: "tierID",
         as: "tierAplikasi",
+      });
+      this.hasMany(models.detail_transaksi, {
+        foreignKey: "tierID",
+        as: "detailAplikasi",
       });
     }
   }
