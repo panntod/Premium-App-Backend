@@ -3,20 +3,25 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("aplikasis", {
-      appId: {
+      aplikasiID: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
       },
       nama: {
         type: Sequelize.STRING,
       },
       id_tier: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
+        allowNull:false,
+        references:{
+          model:'tiers',
+          key:'tierID'
+        }
       },
       image: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       deskripsi: {
         type: Sequelize.STRING,

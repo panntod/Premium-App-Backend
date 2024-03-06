@@ -7,16 +7,26 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
       },
       id_transaksi: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
+        allowNull:false,
+        references:{
+          model:'transaksis',
+          key:'transaksiID'
+        }
       },
       id_aplikasi: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
+        allowNull:false,
+        references:{
+          model:'aplikasis',
+          key:'aplikasiID'
+        }
       },
       harga: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
       },
       qty: {
         type: Sequelize.INTEGER,

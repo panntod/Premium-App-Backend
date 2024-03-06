@@ -4,6 +4,12 @@ module.exports = (sequelize, DataTypes) => {
   class transaksi extends Model {
     static associate(models) {
       // define association here
+      this.belongsTo(models.user, {
+        foreignKey:"userID", as:"userTransaksi"
+      })
+      this.belongsTo(models.aplikasi, {
+        foreignKey:"aplikasiID", as:"aplikasiTransaksi"
+      })
     }
   }
   transaksi.init(
@@ -11,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       transaksiID: {
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
       },
       tgl: DataTypes.DATE,
       id_user: DataTypes.INTEGER,

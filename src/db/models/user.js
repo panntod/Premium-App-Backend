@@ -5,6 +5,9 @@ module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     static associate(models) {
       // define association here
+      this.hasMany(models.transaksi, {
+        foreignKey:"userID", as:"userTransaksi"
+      })
     }
   }
   user.init(
@@ -12,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       userID: {
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
       },
       username: DataTypes.STRING,
       password: DataTypes.STRING,

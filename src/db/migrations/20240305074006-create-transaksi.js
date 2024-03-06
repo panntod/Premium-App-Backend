@@ -7,16 +7,28 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
       },
       tgl: {
-        type: Sequelize.DATE,
+        allowNull: false,
+        type: "TIMESTAMP",
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       id_user: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
+        allowNull:false,
+        references:{
+          model:'users',
+          key:'userID'
+        }
       },
       id_aplikasi: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
+        allowNull:false,
+        references:{
+          model:'aplikasis',
+          key:'aplikasiID'
+        }
       },
       status: {
         type: Sequelize.ENUM("sudah", "belum"),

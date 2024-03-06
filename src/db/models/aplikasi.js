@@ -4,11 +4,20 @@ module.exports = (sequelize, DataTypes) => {
   class aplikasi extends Model {
     static associate(models) {
       // define association here
+      this.belongsTo(models.tier, {
+        foreignKey:"tierID", as:"tierAplikasi"
+      })
+      this.hasMany(models.detail_transaksi, {
+        foreignKey:"aplikasiID", as:"detailTransaksiAplikasi"
+      })
+      this.hasMany(models.transaksi, {
+        foreignKey:"aplikasiID", as:"transaksiAplikasi"
+      })
     }
   }
   aplikasi.init(
     {
-      aplikasiId: {
+      aplikasiID: {
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
