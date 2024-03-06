@@ -1,10 +1,10 @@
+const { user: userModel } = require(`../db/models/index`);
 const { PasswordCompare } = require("../helpers/PasswordHelper");
 const {
   GenerateToken,
   ExtractToken,
   ResponseData,
 } = require("../helpers/ResponseHelper");
-const { user: userModel } = require(`../db/models/index`);
 
 exports.authentication = async (req, res) => {
   try {
@@ -70,15 +70,14 @@ exports.authorization = async (req, res, next) => {
 
 
     const decodedToken = ExtractToken(tokenKey);
-    const expirationTime = decodedToken?.payload?.exp;
 
-    if (expirationTime && Date.now() >= expirationTime * 1000) {
+    if (decodedToken.error) {
       return res
         .status(401)
         .send(
           ResponseData(
             false,
-            "Token Sudah Expired, Harap perbarui Token",
+            decodedToken.error,
             null,
             null
           )
@@ -91,7 +90,6 @@ exports.authorization = async (req, res, next) => {
         .send(ResponseData(false, "Unauthorized User", null, null));
     }
 
-    res.locals.username = decodedToken?.username;
     res.locals.role = decodedToken?.role;
     next();
   } catch (error) {
