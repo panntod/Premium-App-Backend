@@ -1,7 +1,7 @@
 const userModel = require(`../db/models/index`).user;
 const { Op } = require(`sequelize`);
-// const { GeneratePasswword, ComparePass } = require("../helpers/passhelper");
 const { ResponseData } = require("../helpers/ResponseHelper");
+const { PasswordHashing } = require("../helpers/PasswordHelper");
 
 exports.getAllUser = async (request, response) => {
   try {
@@ -30,6 +30,13 @@ exports.findUser = async (request, response) => {
         ],
       },
     });
+
+    if(!users){
+      return response
+        .status(404)
+        .send(ResponseData(true, "User tidak ditemukan", null, null));
+    }
+
     return response
       .status(200)
       .send(ResponseData(true, "Sukses mengambil user", null, users));
@@ -43,10 +50,10 @@ exports.findUser = async (request, response) => {
 
 exports.addUser = async (request, response) => {
   try {
-    let newUser = {
+    const newUser = {
       username: request.body.username,
       nama: request.body.nama,
-      password: request.body.password,
+      password: await PasswordHashing(request.body.password),
       role: request.body.role,
     };
 
@@ -84,28 +91,13 @@ exports.updateUser = async (request, response) => {
 };
 
 exports.resetPassword = async (request, response) => {
-  let { email, password, newPass } = request.body;
   try {
-    const findUser = await userModel.findOne({
-      where: { email: email },
-    });
-    if (!findUser) {
-      return response
-        .status(404)
-        .send(ResponseData(false, "User tidak ditemukan", null, null));
-    }
+    let { username, newPassword } = request.body;
+    const hashedPass = await PasswordHashing(newPassword);
 
-    const isValidPassword = await ComparePass(password, findUser.password);
-
-    if (!isValidPassword) {
-      return response
-        .status(404)
-        .send(ResponseData(false, "password gk vailid", null, null));
-    }
-    const hashedPass = await GeneratePasswword(newPass);
-    const result = await userModel.update(
+    await userModel.update(
       { password: hashedPass },
-      { where: { email: email } }
+      { where: { username: username } }
     );
     return response
       .status(201)

@@ -22,6 +22,7 @@
     "mysql2": "^3.9.2",
     "nodemon": "^3.1.0",
     "path": "^0.12.7",
-    "sequelize": "^6.37.1"
+    "sequelize": "^6.37.1",
+    "validatorjs": "^3.22.1"
   }
 }
