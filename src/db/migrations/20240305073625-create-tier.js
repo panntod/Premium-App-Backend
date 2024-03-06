@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.BIGINT,
       },
       harga: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
       },
       nama: {
         type: Sequelize.STRING,

@@ -25,14 +25,22 @@ module.exports = {
           key: "aplikasiID",
         },
       },
+      tierID: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        references: {
+          model: "tiers",
+          key: "tierID",
+        },
+      },
       harga: {
         type: Sequelize.BIGINT,
       },
       qty: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
       },
       total_harga: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
       },
       createdAt: {
         allowNull: false,
