@@ -26,9 +26,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BIGINT,
       },
       tgl: DataTypes.DATE,
-      userID: DataTypes.INTEGER,
-      aplikasiID: DataTypes.INTEGER,
-      status: DataTypes.ENUM("sudah", "belum"),
+      userID: DataTypes.BIGINT,
+      aplikasiID: DataTypes.BIGINT,
+      status: DataTypes.ENUM("draft", "lunas"),
     },
     {
       sequelize,

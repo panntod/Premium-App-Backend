@@ -4,13 +4,13 @@ module.exports = (sequelize, DataTypes) => {
   class tier extends Model {
     static associate(models) {
       // define association here
-      this.belongsTo(models.aplikasi, {
+      this.hasOne(models.aplikasi, {
         foreignKey: "tierID",
-        as: "tierAplikasi",
+        as: "aplikasiTier",
       });
       this.hasMany(models.detail_transaksi, {
         foreignKey: "tierID",
-        as: "detailAplikasi",
+        as: "detailTier",
       });
     }
   }
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.BIGINT,
       },
-      harga: DataTypes.STRING,
+      harga: DataTypes.BIGINT,
       nama: DataTypes.STRING,
     },
     {

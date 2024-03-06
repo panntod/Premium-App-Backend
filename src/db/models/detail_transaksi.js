@@ -23,8 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       transaksiID: DataTypes.INTEGER,
       aplikasiID: DataTypes.INTEGER,
-      harga: DataTypes.STRING,
-      qty: DataTypes.INTEGER,
+      tierID: DataTypes.INTEGER,
+      harga: DataTypes.BIGINT,
+      qty: DataTypes.BIGINT,
       total_harga: DataTypes.BIGINT,
     },
     {
