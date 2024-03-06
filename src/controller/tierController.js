@@ -1,5 +1,4 @@
 const tierModel = require("../db/models/index").tier;
-const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 
 exports.getAllTier = async (request, response) => {
