@@ -37,8 +37,7 @@ exports.addTransaksi = async (request, response) => {
       },
     });
 
-    const newDetailTransaksi = [
-      {
+    const newDetailTransaksi = {
         transaksiID: transaksiNew?.transaksiID,
         aplikasiID: aplikasiData?.aplikasiID,
         tierID: aplikasiData?.tierAplikasi.tierID,
@@ -47,10 +46,9 @@ exports.addTransaksi = async (request, response) => {
         total_harga:
           (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) *
           request.body.qty,
-      },
-    ];
+      }
 
-    const result = await detailTransaksiModel.bulkCreate(newDetailTransaksi);
+    const result = await detailTransaksiModel.create(newDetailTransaksi);
 
     return response
       .status(201)
@@ -88,18 +86,16 @@ exports.getAllTransaksi = async (request, response) => {
 
       return {
         transaksiID: transaksi.transaksiID,
+        detailTransaksiID: firstDetail ? firstDetail.detail_transaksiID : null,
         status: transaksi.status,
-        userID: transaksi.userID,
         namaUser: transaksi.userTransaksi.nama,
         username: transaksi.userTransaksi.username,
-        aplikasiID: transaksi.aplikasiTransaksi.aplikasiID,
         namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
-        image: transaksi.aplikasiTransaksi.image,
-        tierID: firstDetail ? firstDetail.tierID : null,
         qty: firstDetail ? firstDetail.qty : null,
         harga: firstDetail ? firstDetail.harga : null,
-        total_harga: firstDetail ? firstDetail.total_harga : null,
+        totalHarga: firstDetail ? firstDetail.total_harga : null,
+        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
+        image: transaksi.aplikasiTransaksi.image,
         tgl: transaksi.tgl,
       };
     });
@@ -157,18 +153,16 @@ exports.getTransaksiById = async (request, response) => {
 
       return {
         transaksiID: transaksi.transaksiID,
+        detailTransaksiID: firstDetail ? firstDetail.detail_transaksiID : null,
         status: transaksi.status,
-        userID: transaksi.userID,
         namaUser: transaksi.userTransaksi.nama,
         username: transaksi.userTransaksi.username,
-        aplikasiID: transaksi.aplikasiTransaksi.aplikasiID,
         namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
-        image: transaksi.aplikasiTransaksi.image,
-        tierID: firstDetail ? firstDetail.tierID : null,
         qty: firstDetail ? firstDetail.qty : null,
         harga: firstDetail ? firstDetail.harga : null,
-        total_harga: firstDetail ? firstDetail.total_harga : null,
+        totalHarga: firstDetail ? firstDetail.total_harga : null,
+        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
+        image: transaksi.aplikasiTransaksi.image,
         tgl: transaksi.tgl,
       };
     });
