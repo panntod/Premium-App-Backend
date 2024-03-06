@@ -19,5 +19,5 @@ const indexRoute = require("./routes/index");
 app.use(indexRoute);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server of cafe runs on port ${PORT}`);
+  console.log(`🚀 Server of premium apps runs on port ${PORT}`);
 });
