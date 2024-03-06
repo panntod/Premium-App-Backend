@@ -5,8 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.aplikasi, {
-        foreignKey:"id_tier", as:"tierAplikasi"
-      })
+        foreignKey: "tierID",
+        as: "tierAplikasi",
+      });
     }
   }
   tier.init(
