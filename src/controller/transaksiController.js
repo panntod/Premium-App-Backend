@@ -1,4 +1,3 @@
-const { Op, where } = require("sequelize");
 const { ResponseData } = require("../helpers/ResponseHelper");
 const {
   transaksi: transaksiModel,
