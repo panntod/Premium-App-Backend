@@ -111,3 +111,25 @@ exports.deleteUser = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
+
+exports.topUpSaldo = async (request, response) => {
+  try {
+    const userID = request.params.userID;
+    const findUser = await userModel.findOne({ where: { userID: userID } });
+    if (!findUser) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
+    }
+    await userModel.update({ saldo: request.body.saldo },{ where: { userID: userID } });
+
+    return response
+      .status(201)
+      .send(ResponseData(true, "Sukses menambahkan saldo user", null, null));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};

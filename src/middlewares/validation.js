@@ -115,3 +115,29 @@ exports.transactionValidation = async (request, response, next) => {
   }
 };
 
+
+const topUpValidationRules = {
+  saldo: "required|numeric"
+};
+
+exports.topUpValidation = async (request, response, next) => {
+  try {
+    const topUpData = {
+      saldo: request.body.saldo
+    };
+
+    const validate = new Validator(topUpData, topUpValidationRules);
+
+    if (validate.fails()) {
+      return response
+        .status(400)
+        .send(ResponseData(false, "Bad Request", validate.errors, null));
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    return response.status(500).send(ResponseData(false, "", error.message, null));
+  }
+};
+

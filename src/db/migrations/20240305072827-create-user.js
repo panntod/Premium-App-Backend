@@ -18,6 +18,10 @@ module.exports = {
       nama: {
         type: Sequelize.STRING,
       },
+      saldo: {
+        type: Sequelize.BIGINT,
+        defaultValue: 0
+      },
       role: {
         type: Sequelize.ENUM("user", "admin"),
         defaultValue: "user",

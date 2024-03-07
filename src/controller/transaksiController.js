@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { ResponseData } = require("../helpers/ResponseHelper");
 const {
   transaksi: transaksiModel,
@@ -20,8 +20,18 @@ exports.addTransaksi = async (request, response) => {
         .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
     }
 
+    const existingUser = await userModel.findOne({
+      where: { userID: request.body.userID },
+    });
+
+    if (!existingUser) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
+    }
+
     const newTransaksi = {
-      userID: request.body.userID,
+      userID: existingUser.userID,
       aplikasiID: existingAplikasi.aplikasiID,
     };
 
@@ -38,15 +48,14 @@ exports.addTransaksi = async (request, response) => {
     });
 
     const newDetailTransaksi = {
-        transaksiID: transaksiNew?.transaksiID,
-        aplikasiID: aplikasiData?.aplikasiID,
-        tierID: aplikasiData?.tierAplikasi.tierID,
-        harga: aplikasiData ? aplikasiData.tierAplikasi.harga : 0,
-        qty: request.body.qty,
-        total_harga:
-          (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) *
-          request.body.qty,
-      }
+      transaksiID: transaksiNew?.transaksiID,
+      aplikasiID: aplikasiData?.aplikasiID,
+      tierID: aplikasiData?.tierAplikasi.tierID,
+      harga: aplikasiData ? aplikasiData.tierAplikasi.harga : 0,
+      qty: request.body.qty,
+      total_harga:
+        (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) * request.body.qty,
+    };
 
     const result = await detailTransaksiModel.create(newDetailTransaksi);
 
@@ -187,11 +196,59 @@ exports.getTransaksiById = async (request, response) => {
 
 exports.updateStatusTransaksi = async (request, response) => {
   try {
-    let transaksiID = request.params.transaksiID;
+    const existingUser = await userModel.findOne({
+      where: { userID: request.body.userID },
+    });
+
+    if (!existingUser) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
+    }
+
+    const existingTransaksi = await transaksiModel.findOne({
+      where: { transaksiID: request.params.transaksiID },
+      include: {
+        model: detailTransaksiModel,
+        as: "detailTransaksi",
+      },
+    });
+
+    if (!existingTransaksi) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "Transaksi tidak ditemukan", null, null));
+    } else if (existingTransaksi.status === "lunas") {
+      return response
+        .status(400)
+        .send(ResponseData(false, "Transaksi sudah dibayar", null, null));
+    }
+
+    const total = existingTransaksi.detailTransaksi[0].total_harga;
+    const sisaSaldo = existingUser.saldo - total;
+    if (sisaSaldo < 0) {
+      return response
+        .status(402)
+        .send(ResponseData(false, "Saldo anda tidak mencukupi", null, null));
+    }
+
+    await userModel.update(
+      { saldo: sisaSaldo },
+      { where: { userID: existingUser.userID } }
+    );
     await transaksiModel.update(
       { status: "lunas" },
-      { where: { transaksiID: transaksiID } }
+      { where: { transaksiID: existingTransaksi.transaksiID } }
     );
+
+    const responseData = {
+      transaksiID: existingTransaksi.transaksiID,
+      detailTransaksiID: existingTransaksi.detailTransaksi[0].detail_transaksiID,
+      status: "lunas",
+      username: existingUser.username,
+      sisaSaldo: sisaSaldo
+    }
+
     return response
       .status(200)
       .send(
@@ -199,7 +256,7 @@ exports.updateStatusTransaksi = async (request, response) => {
           true,
           "Sukses mengupdate status data transaksi",
           null,
-          null
+          responseData
         )
       );
   } catch (error) {
@@ -214,7 +271,7 @@ exports.deleteTransaksi = async (request, response) => {
   try {
     const transaksiID = request.params.transaksiID;
     await detailTransaksiModel.destroy({
-      where: { detail_transaksiID: transaksiID },
+      where: { transaksiID: transaksiID },
     });
     await transaksiModel.destroy({
       where: { transaksiID: transaksiID },
