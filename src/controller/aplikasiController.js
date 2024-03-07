@@ -44,6 +44,10 @@ exports.findApp = async (request, response) => {
           { nama: { [Op.substring]: keyword } },
         ],
       },
+      include: {
+        model: tierModel,
+        as: "tierAplikasi",
+      },
     });
 
     if (!aplikasi) {
@@ -98,7 +102,7 @@ exports.addAplikasi = async (request, response) => {
 
       return response
         .status(201)
-        .send(ResponseData(true, "Sukses membuat data user", null, newApp));
+        .send(ResponseData(true, "Sukses membuat data aplikasi", null, newApp));
     });
   } catch (error) {
     console.log(error);
@@ -163,7 +167,7 @@ exports.updateAplikasi = async (request, response) => {
 
       return response
         .status(201)
-        .send(ResponseData(true, "Sukses membuat data user", null, newApp));
+        .send(ResponseData(true, "Sukses membuat data aplikasi", null, newApp));
     });
   } catch (error) {
     return response
