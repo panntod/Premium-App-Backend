@@ -5,7 +5,7 @@ const {
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const path = require("path");
-const fs = require("fs").promises
+const fs = require("fs").promises;
 const upload = require("./uploadImage").single(`image`);
 
 exports.getAllApp = async (request, response) => {
@@ -70,11 +70,12 @@ exports.addAplikasi = async (request, response) => {
   try {
     upload(request, response, async (error) => {
       if (error) {
+        console.log(error);
         return response
-        .status(500)
-        .send(ResponseData(false, error.message, error, null));
+          .status(500)
+          .send(ResponseData(false, error.message, error, null));
       }
-      
+
       if (!request.file) {
         return response
           .status(500)
@@ -149,16 +150,6 @@ exports.updateAplikasi = async (request, response) => {
             .status(404)
             .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
         }
-      }
-
-      const tierAplikasi = await tierModel.findOne({
-        where: { tierID: newApp.tierID },
-      });
-
-      if (!tierAplikasi) {
-        return response
-          .status(404)
-          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
       }
 
       await aplikasiModel.update(newApp, {
