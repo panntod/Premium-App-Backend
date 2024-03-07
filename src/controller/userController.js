@@ -78,6 +78,8 @@ exports.updateUser = async (request, response) => {
     let newUser = {
       username: request.body.username,
       nama: request.body.nama,
+      password: request.body.password,
+      confirmPassword: request.body.password,
       role: request.body.role,
     };
     await userModel.update(newUser, { where: { userID: userID } });
@@ -121,7 +123,10 @@ exports.topUpSaldo = async (request, response) => {
         .status(404)
         .send(ResponseData(false, "User tidak ditemukan", null, null));
     }
-    await userModel.update({ saldo: request.body.saldo },{ where: { userID: userID } });
+    await userModel.update(
+      { saldo: request.body.saldo },
+      { where: { userID: userID } }
+    );
 
     return response
       .status(201)

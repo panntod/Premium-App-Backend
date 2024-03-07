@@ -43,7 +43,9 @@ exports.registerValidation = async (request, response, next) => {
     next();
   } catch (error) {
     console.error(error);
-    return response.status(500).send(ResponseData(false, "", error.message, null));
+    return response
+      .status(500)
+      .send(ResponseData(false, "", error.message, null));
   }
 };
 
@@ -74,15 +76,15 @@ exports.tierValidation = async (request, response, next) => {
     if (existingName) {
       return response
         .status(400)
-        .send(
-          ResponseData(false, "Bad request", "Nama Sudah Digunakan", null)
-        );
+        .send(ResponseData(false, "Bad request", "Nama Sudah Digunakan", null));
     }
 
     next();
   } catch (error) {
     console.error(error);
-    return response.status(500).send(ResponseData(false, "", error.message, null));
+    return response
+      .status(500)
+      .send(ResponseData(false, "", error.message, null));
   }
 };
 
@@ -97,7 +99,7 @@ exports.transactionValidation = async (request, response, next) => {
     const transactionData = {
       userID: request.body.userID,
       aplikasiID: request.body.aplikasiID,
-      qty: request.body.qty
+      qty: request.body.qty,
     };
 
     const validate = new Validator(transactionData, transactionValidationRules);
@@ -111,19 +113,20 @@ exports.transactionValidation = async (request, response, next) => {
     next();
   } catch (error) {
     console.error(error);
-    return response.status(500).send(ResponseData(false, "", error.message, null));
+    return response
+      .status(500)
+      .send(ResponseData(false, "", error.message, null));
   }
 };
 
-
 const topUpValidationRules = {
-  saldo: "required|numeric"
+  saldo: "required|numeric",
 };
 
 exports.topUpValidation = async (request, response, next) => {
   try {
     const topUpData = {
-      saldo: request.body.saldo
+      saldo: request.body.saldo,
     };
 
     const validate = new Validator(topUpData, topUpValidationRules);
@@ -137,7 +140,8 @@ exports.topUpValidation = async (request, response, next) => {
     next();
   } catch (error) {
     console.error(error);
-    return response.status(500).send(ResponseData(false, "", error.message, null));
+    return response
+      .status(500)
+      .send(ResponseData(false, "", error.message, null));
   }
 };
-

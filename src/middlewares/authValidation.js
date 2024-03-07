@@ -42,7 +42,7 @@ exports.authentication = async (req, res) => {
       nama_user: dataUser.nama_user,
       role: dataUser.role,
       username: dataUser.username,
-      token: token
+      token: token,
     };
 
     return res
@@ -68,21 +68,7 @@ exports.authorization = async (req, res, next) => {
 
     let tokenKey = authToken.split(" ")[1];
 
-
     const decodedToken = ExtractToken(tokenKey);
-
-    if (decodedToken.error) {
-      return res
-        .status(401)
-        .send(
-          ResponseData(
-            false,
-            decodedToken.error,
-            null,
-            null
-          )
-        );
-    }
 
     if (!decodedToken) {
       return res
@@ -90,7 +76,13 @@ exports.authorization = async (req, res, next) => {
         .send(ResponseData(false, "Unauthorized User", null, null));
     }
 
-    res.locals.role = decodedToken?.role;
+    if (decodedToken.error) {
+      return res
+        .status(401)
+        .send(ResponseData(false, decodedToken.error, null, null));
+    }
+
+    res.locals.role = decodedToken.role;
     next();
   } catch (error) {
     console.log(error);
