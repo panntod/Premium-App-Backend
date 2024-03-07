@@ -63,6 +63,14 @@ exports.updateTier = async (request, response) => {
       nama: request.body.nama,
       harga: request.body.harga,
     };
+    const findTier = await tierModel.findOne({ where: { tierID: tierID } });
+
+    if (!findTier) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
+    }
+
     await tierModel.update(newTier, { where: { tierID: tierID } });
     return response
       .status(201)
