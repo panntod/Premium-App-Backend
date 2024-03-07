@@ -1,4 +1,8 @@
-const { tier: tierModel, detail_transaksi: detailTransaksiModel } = require("../db/models/index");
+const {
+  tier: tierModel,
+  detail_transaksi: detailTransaksiModel,
+  transaksi: transaksiModel,
+} = require("../db/models/index");
 const { ResponseData } = require("../helpers/ResponseHelper");
 
 exports.getAllTier = async (request, response) => {
@@ -71,18 +75,26 @@ exports.updateTier = async (request, response) => {
         .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
     }
 
-    const existingDetailTransaksi = await detailTransaksiModel.findAll({ where: { tierID: tierID }})
-
+    const existingDetailTransaksi = await detailTransaksiModel.findAll({
+      where: { tierID: tierID },
+      include: {
+        model: transaksiModel,
+        as: "detailTransaksi",
+      },
+    });
     await tierModel.update(newTier, { where: { tierID: tierID } });
 
     for (let i = 0; i < existingDetailTransaksi.length; i++) {
+      const status = existingDetailTransaksi[i].detailTransaksi.status;
       const existingDetail = existingDetailTransaksi[i];
       const updatedTotalHarga = existingDetail.qty * newTier.harga;
 
-      await detailTransaksiModel.update(
-        { harga: newTier.harga, total_harga: updatedTotalHarga },
-        { where: { detail_transaksiID: existingDetail.detail_transaksiID } }
-      );
+      if (status === "draft") {
+        await detailTransaksiModel.update(
+          { harga: newTier.harga, total_harga: updatedTotalHarga },
+          { where: { detail_transaksiID: existingDetail.detail_transaksiID } }
+        );
+      }
     }
 
     return response
