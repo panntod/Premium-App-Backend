@@ -16,7 +16,6 @@ app.post(
 app.put(
   "/:transaksiID",
   authorization,
-  adminOnly,
   transaksiController.updateStatusTransaksi
 );
 app.delete(
