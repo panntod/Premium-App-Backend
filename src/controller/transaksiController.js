@@ -51,9 +51,9 @@ exports.addTransaksi = async (request, response) => {
       aplikasiID: aplikasiData?.aplikasiID,
       tierID: aplikasiData?.tierAplikasi.tierID,
       harga: aplikasiData ? aplikasiData.tierAplikasi.harga : 0,
-      qty: request.body.qty,
+      durasi: request.body.durasi,
       total_harga:
-        (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) * request.body.qty,
+        (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) * request.body.durasi,
     };
 
     const result = await detailTransaksiModel.create(newDetailTransaksi);
@@ -99,7 +99,7 @@ exports.getAllTransaksi = async (request, response) => {
         namaUser: transaksi.userTransaksi.nama,
         username: transaksi.userTransaksi.username,
         namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        qty: firstDetail ? firstDetail.qty : null,
+        durasi: firstDetail ? firstDetail.durasi : null,
         harga: firstDetail ? firstDetail.harga : null,
         totalHarga: firstDetail ? firstDetail.total_harga : null,
         deskripsi: transaksi.aplikasiTransaksi.deskripsi,
@@ -166,7 +166,7 @@ exports.getTransaksiById = async (request, response) => {
         namaUser: transaksi.userTransaksi.nama,
         username: transaksi.userTransaksi.username,
         namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        qty: firstDetail ? firstDetail.qty : null,
+        durasi: firstDetail ? firstDetail.durasi : null,
         harga: firstDetail ? firstDetail.harga : null,
         totalHarga: firstDetail ? firstDetail.total_harga : null,
         deskripsi: transaksi.aplikasiTransaksi.deskripsi,

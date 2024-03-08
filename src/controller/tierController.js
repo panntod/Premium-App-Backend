@@ -87,7 +87,7 @@ exports.updateTier = async (request, response) => {
     for (let i = 0; i < existingDetailTransaksi.length; i++) {
       const status = existingDetailTransaksi[i].detailTransaksi.status;
       const existingDetail = existingDetailTransaksi[i];
-      const updatedTotalHarga = existingDetail.qty * newTier.harga;
+      const updatedTotalHarga = existingDetail.durasi * newTier.harga;
 
       if (status === "draft") {
         await detailTransaksiModel.update(

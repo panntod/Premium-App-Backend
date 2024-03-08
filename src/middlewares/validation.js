@@ -103,7 +103,7 @@ exports.tierValidation = async (request, response, next) => {
 const transactionValidationRules = {
   userID: "required|numeric",
   aplikasiID: "required|numeric",
-  qty: "required|numeric",
+  durasi: "required|numeric",
 };
 
 exports.transactionValidation = async (request, response, next) => {
@@ -111,7 +111,7 @@ exports.transactionValidation = async (request, response, next) => {
     const transactionData = {
       userID: request.body.userID,
       aplikasiID: request.body.aplikasiID,
-      qty: request.body.qty,
+      durasi: request.body.durasi,
     };
 
     const validate = new Validator(transactionData, transactionValidationRules);
