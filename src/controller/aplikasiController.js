@@ -5,17 +5,26 @@ const {
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const path = require("path");
-const fs = require("fs").promises
+const fs = require("fs").promises;
 const upload = require("./uploadImage").single(`image`);
 
 exports.getAllApp = async (request, response) => {
   try {
-    const appsWithTiers = await aplikasiModel.findAll({
+    const dataApp = await aplikasiModel.findAll({
       include: {
         model: tierModel,
         as: "tierAplikasi",
       },
     });
+
+    const formattedData = dataApp.map((app) => ({
+      nama: app.nama,
+      image: app.image,
+      deskripsi: app.deskripsi,
+      tier: app.tierAplikasi.nama,
+      harga: app.tierAplikasi.harga,
+    }));
+
     return response
       .status(200)
       .send(
@@ -23,11 +32,11 @@ exports.getAllApp = async (request, response) => {
           true,
           "Sukses mengambil seluruh aplikasi",
           null,
-          appsWithTiers
+          formattedData
         )
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return response
       .status(500)
       .send(ResponseData(false, error.message, error, null));
@@ -37,7 +46,7 @@ exports.getAllApp = async (request, response) => {
 exports.findApp = async (request, response) => {
   try {
     let keyword = request.body.keyword;
-    let aplikasi = await aplikasiModel.findAll({
+    let dataAplikasi = await aplikasiModel.findAll({
       where: {
         [Op.or]: [
           { aplikasiID: { [Op.substring]: keyword } },
@@ -50,14 +59,23 @@ exports.findApp = async (request, response) => {
       },
     });
 
-    if (!aplikasi) {
+    if (!dataAplikasi) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
+
+    const formattedData = dataAplikasi.map((app) => ({
+      nama: app.nama,
+      image: app.image,
+      deskripsi: app.deskripsi,
+      tier: app.tierAplikasi.nama,
+      harga: app.tierAplikasi.harga,
+    }));
+
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, aplikasi));
+      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
   } catch (error) {
     console.log(error);
     return response
@@ -71,10 +89,10 @@ exports.addAplikasi = async (request, response) => {
     upload(request, response, async (error) => {
       if (error) {
         return response
-        .status(500)
-        .send(ResponseData(false, error.message, error, null));
+          .status(500)
+          .send(ResponseData(false, error.message, error, null));
       }
-      
+
       if (!request.file) {
         return response
           .status(500)
