@@ -171,7 +171,7 @@ exports.updateAplikasi = async (request, response) => {
 
           newApp.image = request.file.filename;
         }
-      } 
+      }
 
       if (!newApp.tierID) {
         newApp.tierID = selectedApp.tierID;
@@ -196,6 +196,11 @@ exports.deleteAplikasi = async (request, response) => {
   try {
     const appID = request.params.id;
     const app = await aplikasiModel.findOne({ where: { aplikasiID: appID } });
+    if (!app) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
+    }
     const oldImage = app.image;
     const pathImage = path.join(__dirname, `../images`, oldImage);
     if (fs.existsSync(pathImage)) {

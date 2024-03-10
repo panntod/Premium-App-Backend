@@ -53,7 +53,8 @@ exports.addTransaksi = async (request, response) => {
       harga: aplikasiData ? aplikasiData.tierAplikasi.harga : 0,
       durasi: request.body.durasi,
       total_harga:
-        (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) * request.body.durasi,
+        (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) *
+        request.body.durasi,
     };
 
     const result = await detailTransaksiModel.create(newDetailTransaksi);
@@ -242,11 +243,12 @@ exports.updateStatusTransaksi = async (request, response) => {
 
     const responseData = {
       transaksiID: existingTransaksi.transaksiID,
-      detailTransaksiID: existingTransaksi.detailTransaksi[0].detail_transaksiID,
+      detailTransaksiID:
+        existingTransaksi.detailTransaksi[0].detail_transaksiID,
       status: "lunas",
       username: existingUser.username,
-      sisaSaldo: sisaSaldo
-    }
+      sisaSaldo: sisaSaldo,
+    };
 
     return response
       .status(200)
@@ -269,6 +271,14 @@ exports.updateStatusTransaksi = async (request, response) => {
 exports.deleteTransaksi = async (request, response) => {
   try {
     const transaksiID = request.params.transaksiID;
+    const existingTransaksi = await transaksiModel.findOne({
+      where: { transaksiID: request.params.transaksiID },
+    });
+    if (!existingTransaksi) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "Transaksi tidak ditemukan", null, null));
+    }
     await detailTransaksiModel.destroy({
       where: { transaksiID: transaksiID },
     });

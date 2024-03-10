@@ -33,7 +33,7 @@ exports.findUser = async (request, response) => {
       },
     });
 
-    if (!users) {
+    if (!users.userID) {
       return response
         .status(404)
         .send(ResponseData(true, "User tidak ditemukan", null, null));
@@ -82,6 +82,14 @@ exports.updateUser = async (request, response) => {
       confirmPassword: request.body.password,
       role: request.body.role,
     };
+    const existingUser = await userModel.findOne({
+      where: { userID: userID },
+    });
+    if (!existingUser) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "User tidak ditemukan", null, null));
+    }
     await userModel.update(newUser, { where: { userID: userID } });
     return response
       .status(201)
