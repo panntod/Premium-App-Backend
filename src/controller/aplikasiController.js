@@ -1,4 +1,5 @@
 const {
+  user: userModel,
   aplikasi: aplikasiModel,
   tier: tierModel,
   transaksi: transaksiModel,
@@ -216,7 +217,7 @@ exports.deleteAplikasi = async (request, response) => {
     if (fs.existsSync(pathImage)) {
       fs.unlink(pathImage, (error) => console.log(error));
     }
-    
+
     await aplikasiModel.destroy({ where: { aplikasiID: appID } });
     return response
       .status(201)
@@ -230,10 +231,12 @@ exports.deleteAplikasi = async (request, response) => {
 
 exports.getStatistik = async (request, response) => {
   try {
+    const dataUser = await userModel.findAll();
     const dataApp = await aplikasiModel.findAll();
     const dataTransaksi = await transaksiModel.findAll();
 
     const responseData = {
+      statistikUser: dataUser.length,
       statistikApp: dataApp.length,
       statistikTransaksi: dataTransaksi.length,
     };
