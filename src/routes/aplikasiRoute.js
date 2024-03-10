@@ -6,6 +6,7 @@ const aplikasiController = require(`../controller/aplikasiController`);
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 
 app.get("/", aplikasiController.getAllApp);
+app.get("/statistik", aplikasiController.getStatistik);
 app.post("/find", aplikasiController.findApp);
 app.post("/", authorization, adminOnly, aplikasiController.addAplikasi);
 app.put("/:id", authorization, adminOnly, aplikasiController.updateAplikasi);

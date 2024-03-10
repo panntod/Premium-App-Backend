@@ -1,6 +1,7 @@
 const {
   aplikasi: aplikasiModel,
   tier: tierModel,
+  transaksi: transaksiModel,
 } = require("../db/models/index");
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
@@ -207,6 +208,26 @@ exports.deleteAplikasi = async (request, response) => {
     return response
       .status(201)
       .send(ResponseData(true, "Sukses delete data", null, null));
+  } catch (error) {
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.getStatistik = async (request, response) => {
+  try {
+    const dataApp = await aplikasiModel.findAll();
+    const dataTransaksi = await transaksiModel.findAll();
+
+    const responseData = {
+      statistikApp: dataApp.length,
+      statistikTransaksi: dataTransaksi.length,
+    };
+
+    response.status(200).send(
+      ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
+    );
   } catch (error) {
     return response
       .status(500)
