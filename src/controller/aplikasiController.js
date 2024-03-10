@@ -61,7 +61,7 @@ exports.findApp = async (request, response) => {
       },
     });
 
-    if (!dataAplikasi) {
+    if (!dataAplikasi.length) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
@@ -172,7 +172,7 @@ exports.updateAplikasi = async (request, response) => {
 
           newApp.image = request.file.filename;
         }
-      } 
+      }
 
       if (!newApp.tierID) {
         newApp.tierID = selectedApp.tierID;
@@ -206,7 +206,9 @@ exports.updateAplikasi = async (request, response) => {
 exports.deleteAplikasi = async (request, response) => {
   try {
     const appID = request.params.id;
-    const dataApp = await aplikasiModel.findOne({ where: { aplikasiID: appID } });
+    const dataApp = await aplikasiModel.findOne({
+      where: { aplikasiID: appID },
+    });
     if (!dataApp) {
       return response
         .status(404)
