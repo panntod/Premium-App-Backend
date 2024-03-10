@@ -89,6 +89,7 @@ exports.addAplikasi = async (request, response) => {
   try {
     upload(request, response, async (error) => {
       if (error) {
+        console.log(error);
         return response
           .status(500)
           .send(ResponseData(false, error.message, error, null));
@@ -170,20 +171,10 @@ exports.updateAplikasi = async (request, response) => {
 
           newApp.image = request.file.filename;
         }
-      } 
+      }
 
       if (!newApp.tierID) {
         newApp.tierID = selectedApp.tierID;
-      }
-
-      const tierAplikasi = await tierModel.findOne({
-        where: { tierID: newApp.tierID },
-      });
-
-      if (!tierAplikasi) {
-        return response
-          .status(404)
-          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
       }
 
       await aplikasiModel.update(newApp, {
@@ -205,6 +196,11 @@ exports.deleteAplikasi = async (request, response) => {
   try {
     const appID = request.params.id;
     const app = await aplikasiModel.findOne({ where: { aplikasiID: appID } });
+    if (!app) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
+    }
     const oldImage = app.image;
     const pathImage = path.join(__dirname, `../images`, oldImage);
     if (fs.existsSync(pathImage)) {

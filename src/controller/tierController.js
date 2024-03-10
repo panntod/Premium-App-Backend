@@ -29,6 +29,12 @@ exports.findTier = async (request, response) => {
         tierID: tierID,
       },
     });
+    const findTier = await tierModel.findOne({ where: { tierID: tierID } });
+    if (!findTier) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
+    }
     return response
       .status(200)
       .send(ResponseData(true, "Sukses mendapatkan data tier", null, tiers));
