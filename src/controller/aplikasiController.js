@@ -147,11 +147,17 @@ exports.updateAplikasi = async (request, response) => {
         deskripsi: request.body.deskripsi,
       };
 
-      if (request.file) {
-        const selectedApp = await aplikasiModel.findOne({
-          where: { aplikasiID: aplikasiID },
-        });
+      const selectedApp = await aplikasiModel.findOne({
+        where: { aplikasiID: aplikasiID },
+      });
 
+      if (!selectedApp) {
+        return response
+          .status(404)
+          .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
+      }
+
+      if (request.file) {
         if (selectedApp) {
           const oldImage = selectedApp.image;
           const pathImage = path.join(__dirname, "../images", oldImage);
@@ -163,11 +169,11 @@ exports.updateAplikasi = async (request, response) => {
           }
 
           newApp.image = request.file.filename;
-        } else {
-          return response
-            .status(404)
-            .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
         }
+      } 
+
+      if (!newApp.tierID) {
+        newApp.tierID = selectedApp.tierID;
       }
 
       const tierAplikasi = await tierModel.findOne({
@@ -225,9 +231,11 @@ exports.getStatistik = async (request, response) => {
       statistikTransaksi: dataTransaksi.length,
     };
 
-    response.status(200).send(
-      ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
-    );
+    response
+      .status(200)
+      .send(
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
+      );
   } catch (error) {
     return response
       .status(500)
