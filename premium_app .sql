@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 10 Mar 2024 pada 16.23
+-- Waktu pembuatan: 11 Mar 2024 pada 00.05
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.2.4
 
@@ -42,12 +42,12 @@ CREATE TABLE `aplikasis` (
 --
 
 INSERT INTO `aplikasis` (`aplikasiID`, `nama`, `tierID`, `image`, `deskripsi`, `createdAt`, `updatedAt`) VALUES
-(1, 'Spotify', 1, 'images-1710082932368.jpg', 'Spotify Pro', '2024-03-10 15:02:12', '2024-03-10 15:02:12'),
-(2, 'Netflix', 1, 'images-1710083133797.png', 'Netflix Premium', '2024-03-10 15:05:33', '2024-03-10 15:05:33'),
-(3, 'Disney+', 2, 'images-1710083315582.jpg', 'Disney+ Basic', '2024-03-10 15:08:35', '2024-03-10 15:08:35'),
-(4, 'Apple TV+', 2, 'images-1710083581133.png', 'Apple TV Pass', '2024-03-10 15:13:01', '2024-03-10 15:13:01'),
-(5, 'Youtube', 3, 'images-1710083642112.png', 'Youtube Premium', '2024-03-10 15:14:02', '2024-03-10 15:14:02'),
-(6, 'Apple Music', 3, 'images-1710083747822.png', 'Apple Music Plus', '2024-03-10 15:15:47', '2024-03-10 15:15:47');
+(1, 'Spotify', 1, 'images-1710110662441.jpg', 'Spotify Pro', '2024-03-10 22:44:22', '2024-03-10 22:44:22'),
+(2, 'Netflix', 1, 'images-1710110730572.png', 'Netflix Monthly Pass', '2024-03-10 22:45:30', '2024-03-10 22:45:30'),
+(3, 'Disney+', 2, 'images-1710110786045.jpg', 'Disney+ Pass', '2024-03-10 22:46:26', '2024-03-10 22:46:26'),
+(4, 'AppleTV+', 2, 'images-1710111026659.png', 'AppleTV+ Monthly', '2024-03-10 22:50:26', '2024-03-10 22:50:26'),
+(5, 'Youtube', 3, 'images-1710111655738.png', 'Youtube Premium', '2024-03-10 22:51:03', '2024-03-10 23:00:55'),
+(6, 'Apple Music', 3, 'images-1710111088595.png', 'Apple Music Premium', '2024-03-10 22:51:28', '2024-03-10 22:51:28');
 
 -- --------------------------------------------------------
 
@@ -107,9 +107,9 @@ CREATE TABLE `tiers` (
 --
 
 INSERT INTO `tiers` (`tierID`, `harga`, `nama`, `createdAt`, `updatedAt`) VALUES
-(1, 43000, 'Common', '2024-03-10 14:59:33', '2024-03-10 14:59:33'),
-(2, 57000, 'Rare', '2024-03-10 14:59:59', '2024-03-10 14:59:59'),
-(3, 70000, 'Premium', '2024-03-10 15:00:28', '2024-03-10 15:00:28');
+(1, 43000, 'Common', '2024-03-10 22:37:19', '2024-03-10 22:37:19'),
+(2, 57000, 'Rare', '2024-03-10 22:37:39', '2024-03-10 22:37:39'),
+(3, 70000, 'Premium', '2024-03-10 22:37:56', '2024-03-10 22:37:56');
 
 -- --------------------------------------------------------
 
@@ -149,7 +149,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userID`, `username`, `password`, `nama`, `saldo`, `role`, `createdAt`, `updatedAt`) VALUES
-(1, 'Mas Atmint', '$2b$10$Hc9vs6ulRzq6VDbnAHtR2euF261sGIA0HXmi1yXOcs29aD5qTqX9e', 'Gradak', 0, 'admin', '2024-03-10 14:58:08', '2024-03-10 14:58:08');
+(1, 'Mas Atmint', '$2b$10$hnjhZey1voK85xN6IyBpPOWD3lYbARahDp.QKz0UFdyZEUeL8BtF6', 'Gradak', 20000000, 'admin', '2024-03-10 22:34:19', '2024-03-10 23:04:03');
 
 --
 -- Indexes for dumped tables
