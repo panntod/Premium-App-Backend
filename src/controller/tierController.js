@@ -30,11 +30,13 @@ exports.findTier = async (request, response) => {
       },
     });
     const findTier = await tierModel.findOne({ where: { tierID: tierID } });
+
     if (!findTier) {
       return response
         .status(404)
         .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
     }
+    
     return response
       .status(200)
       .send(ResponseData(true, "Sukses mendapatkan data tier", null, tiers));
@@ -117,12 +119,15 @@ exports.updateTier = async (request, response) => {
 exports.deleteTier = async (request, response) => {
   try {
     let tierID = request.params.id;
+
     const result = await tierModel.destroy({ where: { tierID: tierID } });
+
     if (!result) {
       return response
         .status(404)
         .send(ResponseData(false, "Tier tidak ditemukan", null, null));
     }
+
     return response
       .status(201)
       .send(ResponseData(true, "Sukses menghapus data tier", null, null));

@@ -171,10 +171,20 @@ exports.updateAplikasi = async (request, response) => {
 
           newApp.image = request.file.filename;
         }
-      }
+      } 
 
       if (!newApp.tierID) {
         newApp.tierID = selectedApp.tierID;
+      }
+
+      const tierAplikasi = await tierModel.findOne({
+        where: { tierID: newApp.tierID },
+      });
+
+      if (!tierAplikasi) {
+        return response
+          .status(404)
+          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
       }
 
       await aplikasiModel.update(newApp, {
@@ -195,17 +205,18 @@ exports.updateAplikasi = async (request, response) => {
 exports.deleteAplikasi = async (request, response) => {
   try {
     const appID = request.params.id;
-    const app = await aplikasiModel.findOne({ where: { aplikasiID: appID } });
-    if (!app) {
+    const dataApp = await aplikasiModel.findOne({ where: { aplikasiID: appID } });
+    if (!dataApp) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
-    const oldImage = app.image;
+    const oldImage = dataApp.image;
     const pathImage = path.join(__dirname, `../images`, oldImage);
     if (fs.existsSync(pathImage)) {
       fs.unlink(pathImage, (error) => console.log(error));
     }
+    
     await aplikasiModel.destroy({ where: { aplikasiID: appID } });
     return response
       .status(201)
