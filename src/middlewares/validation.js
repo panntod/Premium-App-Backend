@@ -9,7 +9,6 @@ const registerValidationRules = {
   password: "required|string|min:8|alpha_num",
   confirmPassword: "required|same:password",
 };
-
 exports.registerValidation = async (request, response, next) => {
   try {
     const userData = {
@@ -23,9 +22,14 @@ exports.registerValidation = async (request, response, next) => {
     const validate = new Validator(userData, registerValidationRules);
 
     if (validate.fails()) {
+      const errorMessages = Object.values(validate.errors.errors)
+        .flat()
+        .join(", ")
+        .split(", ");
+
       return response
         .status(400)
-        .send(ResponseData(false, "Bad Request", validate.errors, null));
+        .send(ResponseData(false, "Bad Request", errorMessages, null));
     }
 
     const existingUsername = await userModel.findOne({
@@ -36,7 +40,7 @@ exports.registerValidation = async (request, response, next) => {
       return response
         .status(400)
         .send(
-          ResponseData(false, "Bad request", "Username Sudah Digunakan", null)
+          ResponseData(false, "Bad request", ["Username Sudah Digunakan"], null)
         );
     }
 
@@ -45,7 +49,7 @@ exports.registerValidation = async (request, response, next) => {
     console.error(error);
     return response
       .status(500)
-      .send(ResponseData(false, "", error.message, null));
+      .send(ResponseData(false, "", [error.message], null));
   }
 };
 
@@ -64,9 +68,14 @@ exports.tierValidation = async (request, response, next) => {
     const validate = new Validator(tierData, tierValidationRules);
 
     if (validate.fails()) {
+      const validationErrors = Object.values(validate.errors.errors)
+        .flat()
+        .join(", ")
+        .split(", ");
+
       return response
         .status(400)
-        .send(ResponseData(false, "Bad Request", validate.errors, null));
+        .send(ResponseData(false, "Bad Request", validationErrors, null));
     }
 
     const existingName = await tierModel.findOne({
@@ -76,7 +85,9 @@ exports.tierValidation = async (request, response, next) => {
     if (existingName) {
       return response
         .status(400)
-        .send(ResponseData(false, "Bad request", "Nama Sudah Digunakan", null));
+        .send(
+          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null)
+        );
     }
 
     next();
@@ -84,14 +95,15 @@ exports.tierValidation = async (request, response, next) => {
     console.error(error);
     return response
       .status(500)
-      .send(ResponseData(false, "", error.message, null));
+      .send(
+        ResponseData(false, "Internal Server Error", [error.message], null)
+      );
   }
 };
-
 const transactionValidationRules = {
   userID: "required|numeric",
   aplikasiID: "required|numeric",
-  qty: "required|numeric",
+  durasi: "required|numeric",
 };
 
 exports.transactionValidation = async (request, response, next) => {
@@ -99,15 +111,20 @@ exports.transactionValidation = async (request, response, next) => {
     const transactionData = {
       userID: request.body.userID,
       aplikasiID: request.body.aplikasiID,
-      qty: request.body.qty,
+      durasi: request.body.durasi,
     };
 
     const validate = new Validator(transactionData, transactionValidationRules);
 
     if (validate.fails()) {
+      const validationErrors = Object.values(validate.errors.errors)
+        .flat()
+        .join(", ")
+        .split(", ");
+
       return response
         .status(400)
-        .send(ResponseData(false, "Bad Request", validate.errors, null));
+        .send(ResponseData(false, "Bad Request", validationErrors, null));
     }
 
     next();
@@ -115,7 +132,9 @@ exports.transactionValidation = async (request, response, next) => {
     console.error(error);
     return response
       .status(500)
-      .send(ResponseData(false, "", error.message, null));
+      .send(
+        ResponseData(false, "Internal Server Error", [error.message], null)
+      );
   }
 };
 
@@ -132,9 +151,14 @@ exports.topUpValidation = async (request, response, next) => {
     const validate = new Validator(topUpData, topUpValidationRules);
 
     if (validate.fails()) {
+      const validationErrors = Object.values(validate.errors.errors)
+        .flat()
+        .join(", ")
+        .split(", ");
+
       return response
         .status(400)
-        .send(ResponseData(false, "Bad Request", validate.errors, null));
+        .send(ResponseData(false, "Bad Request", validationErrors, null));
     }
 
     next();
@@ -142,6 +166,8 @@ exports.topUpValidation = async (request, response, next) => {
     console.error(error);
     return response
       .status(500)
-      .send(ResponseData(false, "", error.message, null));
+      .send(
+        ResponseData(false, "Internal Server Error", [error.message], null)
+      );
   }
 };

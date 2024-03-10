@@ -1,6 +1,7 @@
 const {
   aplikasi: aplikasiModel,
   tier: tierModel,
+  transaksi: transaksiModel,
 } = require("../db/models/index");
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
@@ -10,12 +11,21 @@ const upload = require("./uploadImage").single(`image`);
 
 exports.getAllApp = async (request, response) => {
   try {
-    const appsWithTiers = await aplikasiModel.findAll({
+    const dataApp = await aplikasiModel.findAll({
       include: {
         model: tierModel,
         as: "tierAplikasi",
       },
     });
+
+    const formattedData = dataApp.map((app) => ({
+      nama: app.nama,
+      image: app.image,
+      deskripsi: app.deskripsi,
+      tier: app.tierAplikasi.nama,
+      harga: app.tierAplikasi.harga,
+    }));
+
     return response
       .status(200)
       .send(
@@ -23,11 +33,11 @@ exports.getAllApp = async (request, response) => {
           true,
           "Sukses mengambil seluruh aplikasi",
           null,
-          appsWithTiers
+          formattedData
         )
       );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return response
       .status(500)
       .send(ResponseData(false, error.message, error, null));
@@ -37,7 +47,7 @@ exports.getAllApp = async (request, response) => {
 exports.findApp = async (request, response) => {
   try {
     let keyword = request.body.keyword;
-    let aplikasi = await aplikasiModel.findAll({
+    let dataAplikasi = await aplikasiModel.findAll({
       where: {
         [Op.or]: [
           { aplikasiID: { [Op.substring]: keyword } },
@@ -50,14 +60,23 @@ exports.findApp = async (request, response) => {
       },
     });
 
-    if (!aplikasi) {
+    if (!dataAplikasi) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
+
+    const formattedData = dataAplikasi.map((app) => ({
+      nama: app.nama,
+      image: app.image,
+      deskripsi: app.deskripsi,
+      tier: app.tierAplikasi.nama,
+      harga: app.tierAplikasi.harga,
+    }));
+
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, aplikasi));
+      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
   } catch (error) {
     console.log(error);
     return response
@@ -129,11 +148,17 @@ exports.updateAplikasi = async (request, response) => {
         deskripsi: request.body.deskripsi,
       };
 
-      if (request.file) {
-        const selectedApp = await aplikasiModel.findOne({
-          where: { aplikasiID: aplikasiID },
-        });
+      const selectedApp = await aplikasiModel.findOne({
+        where: { aplikasiID: aplikasiID },
+      });
 
+      if (!selectedApp) {
+        return response
+          .status(404)
+          .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
+      }
+
+      if (request.file) {
         if (selectedApp) {
           const oldImage = selectedApp.image;
           const pathImage = path.join(__dirname, "../images", oldImage);
@@ -145,11 +170,11 @@ exports.updateAplikasi = async (request, response) => {
           }
 
           newApp.image = request.file.filename;
-        } else {
-          return response
-            .status(404)
-            .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
         }
+      } 
+
+      if (!newApp.tierID) {
+        newApp.tierID = selectedApp.tierID;
       }
 
       await aplikasiModel.update(newApp, {
@@ -180,6 +205,28 @@ exports.deleteAplikasi = async (request, response) => {
     return response
       .status(201)
       .send(ResponseData(true, "Sukses delete data", null, null));
+  } catch (error) {
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.getStatistik = async (request, response) => {
+  try {
+    const dataApp = await aplikasiModel.findAll();
+    const dataTransaksi = await transaksiModel.findAll();
+
+    const responseData = {
+      statistikApp: dataApp.length,
+      statistikTransaksi: dataTransaksi.length,
+    };
+
+    response
+      .status(200)
+      .send(
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
+      );
   } catch (error) {
     return response
       .status(500)

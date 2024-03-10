@@ -36,7 +36,7 @@ module.exports = {
       harga: {
         type: Sequelize.BIGINT,
       },
-      qty: {
+      durasi: {
         type: Sequelize.BIGINT,
       },
       total_harga: {
