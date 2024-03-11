@@ -4,7 +4,7 @@ const { user: userModel, tier: tierModel } = require("../db/models/index");
 
 const registerValidationRules = {
   nama: "required|string|max:50",
-  role: "required|string|in:user,admin",
+  role: "string|in:user,admin",
   username: "required|string|max:50",
   password: "required|string|min:8|alpha_num",
   confirmPassword: "required|same:password",
