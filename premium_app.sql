@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 11 Mar 2024 pada 00.05
--- Versi server: 10.4.28-MariaDB
--- Versi PHP: 8.2.4
+-- Generation Time: Mar 11, 2024 at 01:55 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `aplikasis`
+-- Table structure for table `aplikasis`
 --
 
 CREATE TABLE `aplikasis` (
@@ -38,21 +38,21 @@ CREATE TABLE `aplikasis` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `aplikasis`
+-- Dumping data for table `aplikasis`
 --
 
 INSERT INTO `aplikasis` (`aplikasiID`, `nama`, `tierID`, `image`, `deskripsi`, `createdAt`, `updatedAt`) VALUES
-(1, 'Spotify', 1, 'images-1710110662441.jpg', 'Spotify Pro', '2024-03-10 22:44:22', '2024-03-10 22:44:22'),
-(2, 'Netflix', 1, 'images-1710110730572.png', 'Netflix Monthly Pass', '2024-03-10 22:45:30', '2024-03-10 22:45:30'),
-(3, 'Disney+', 2, 'images-1710110786045.jpg', 'Disney+ Pass', '2024-03-10 22:46:26', '2024-03-10 22:46:26'),
-(4, 'AppleTV+', 2, 'images-1710111026659.png', 'AppleTV+ Monthly', '2024-03-10 22:50:26', '2024-03-10 22:50:26'),
-(5, 'Youtube', 3, 'images-1710111655738.png', 'Youtube Premium', '2024-03-10 22:51:03', '2024-03-10 23:00:55'),
-(6, 'Apple Music', 3, 'images-1710111088595.png', 'Apple Music Premium', '2024-03-10 22:51:28', '2024-03-10 22:51:28');
+(1, 'Spotify', 1, 'images-1710116545608.jpg', 'Spotify Pro', '2024-03-10 15:02:12', '2024-03-11 00:22:25'),
+(2, 'Netflix', 1, 'images-1710116714124.png', 'Netflix Premium', '2024-03-10 15:05:33', '2024-03-11 00:25:14'),
+(3, 'Disney+', 2, 'images-1710116735150.jpg', 'Disney+ Basic', '2024-03-10 15:08:35', '2024-03-11 00:25:35'),
+(4, 'Apple TV+', 2, 'images-1710116772106.png', 'Apple TV Pass', '2024-03-10 15:13:01', '2024-03-11 00:26:12'),
+(5, 'Youtube', 3, 'images-1710116812027.png', 'Youtube Premium', '2024-03-10 15:14:02', '2024-03-11 00:26:52'),
+(6, 'Apple Music', 3, 'images-1710116976602.png', 'Apple Music Plus', '2024-03-10 15:15:47', '2024-03-11 00:29:36');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `detail_transaksis`
+-- Table structure for table `detail_transaksis`
 --
 
 CREATE TABLE `detail_transaksis` (
@@ -70,7 +70,7 @@ CREATE TABLE `detail_transaksis` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `sequelizemeta`
+-- Table structure for table `sequelizemeta`
 --
 
 CREATE TABLE `sequelizemeta` (
@@ -78,7 +78,7 @@ CREATE TABLE `sequelizemeta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data untuk tabel `sequelizemeta`
+-- Dumping data for table `sequelizemeta`
 --
 
 INSERT INTO `sequelizemeta` (`name`) VALUES
@@ -91,7 +91,7 @@ INSERT INTO `sequelizemeta` (`name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tiers`
+-- Table structure for table `tiers`
 --
 
 CREATE TABLE `tiers` (
@@ -103,18 +103,18 @@ CREATE TABLE `tiers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `tiers`
+-- Dumping data for table `tiers`
 --
 
 INSERT INTO `tiers` (`tierID`, `harga`, `nama`, `createdAt`, `updatedAt`) VALUES
-(1, 43000, 'Common', '2024-03-10 22:37:19', '2024-03-10 22:37:19'),
-(2, 57000, 'Rare', '2024-03-10 22:37:39', '2024-03-10 22:37:39'),
-(3, 70000, 'Premium', '2024-03-10 22:37:56', '2024-03-10 22:37:56');
+(1, 43000, 'Common', '2024-03-10 14:59:33', '2024-03-10 14:59:33'),
+(2, 57000, 'Rare', '2024-03-10 14:59:59', '2024-03-10 14:59:59'),
+(3, 70000, 'Premium', '2024-03-10 15:00:28', '2024-03-10 15:00:28');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `transaksis`
+-- Table structure for table `transaksis`
 --
 
 CREATE TABLE `transaksis` (
@@ -130,7 +130,7 @@ CREATE TABLE `transaksis` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -145,25 +145,26 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`userID`, `username`, `password`, `nama`, `saldo`, `role`, `createdAt`, `updatedAt`) VALUES
-(1, 'Mas Atmint', '$2b$10$hnjhZey1voK85xN6IyBpPOWD3lYbARahDp.QKz0UFdyZEUeL8BtF6', 'Gradak', 20000000, 'admin', '2024-03-10 22:34:19', '2024-03-10 23:04:03');
+(2, 'pandhu', '$2b$10$dZSsM4VW3yYIRxH.hX3AteAh9jfnh.xTHfyrmxn0W/B5MyZNch/OS', 'pandhu', 0, 'admin', '2024-03-10 15:51:31', '2024-03-10 15:51:31'),
+(3, 'asfina', '$2b$10$EVQmQG8iCGb2srEKLC/mB.4DaMJ8ZSjP4uE92trk7c1RpJX4XZ906', 'asfina', 0, 'admin', '2024-03-10 15:51:43', '2024-03-10 15:51:43');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `aplikasis`
+-- Indexes for table `aplikasis`
 --
 ALTER TABLE `aplikasis`
   ADD PRIMARY KEY (`aplikasiID`),
   ADD KEY `tierID` (`tierID`);
 
 --
--- Indeks untuk tabel `detail_transaksis`
+-- Indexes for table `detail_transaksis`
 --
 ALTER TABLE `detail_transaksis`
   ADD PRIMARY KEY (`detail_transaksiID`),
@@ -172,20 +173,20 @@ ALTER TABLE `detail_transaksis`
   ADD KEY `tierID` (`tierID`);
 
 --
--- Indeks untuk tabel `sequelizemeta`
+-- Indexes for table `sequelizemeta`
 --
 ALTER TABLE `sequelizemeta`
   ADD PRIMARY KEY (`name`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indeks untuk tabel `tiers`
+-- Indexes for table `tiers`
 --
 ALTER TABLE `tiers`
   ADD PRIMARY KEY (`tierID`);
 
 --
--- Indeks untuk tabel `transaksis`
+-- Indexes for table `transaksis`
 --
 ALTER TABLE `transaksis`
   ADD PRIMARY KEY (`transaksiID`),
@@ -193,57 +194,57 @@ ALTER TABLE `transaksis`
   ADD KEY `aplikasiID` (`aplikasiID`);
 
 --
--- Indeks untuk tabel `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`userID`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `aplikasis`
+-- AUTO_INCREMENT for table `aplikasis`
 --
 ALTER TABLE `aplikasis`
   MODIFY `aplikasiID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT untuk tabel `detail_transaksis`
+-- AUTO_INCREMENT for table `detail_transaksis`
 --
 ALTER TABLE `detail_transaksis`
   MODIFY `detail_transaksiID` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `tiers`
+-- AUTO_INCREMENT for table `tiers`
 --
 ALTER TABLE `tiers`
   MODIFY `tierID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `transaksis`
+-- AUTO_INCREMENT for table `transaksis`
 --
 ALTER TABLE `transaksis`
   MODIFY `transaksiID` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `userID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `aplikasis`
+-- Constraints for table `aplikasis`
 --
 ALTER TABLE `aplikasis`
   ADD CONSTRAINT `aplikasis_ibfk_1` FOREIGN KEY (`tierID`) REFERENCES `tiers` (`tierID`);
 
 --
--- Ketidakleluasaan untuk tabel `detail_transaksis`
+-- Constraints for table `detail_transaksis`
 --
 ALTER TABLE `detail_transaksis`
   ADD CONSTRAINT `detail_transaksis_ibfk_1` FOREIGN KEY (`transaksiID`) REFERENCES `transaksis` (`transaksiID`),
@@ -251,7 +252,7 @@ ALTER TABLE `detail_transaksis`
   ADD CONSTRAINT `detail_transaksis_ibfk_3` FOREIGN KEY (`tierID`) REFERENCES `tiers` (`tierID`);
 
 --
--- Ketidakleluasaan untuk tabel `transaksis`
+-- Constraints for table `transaksis`
 --
 ALTER TABLE `transaksis`
   ADD CONSTRAINT `transaksis_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),

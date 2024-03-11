@@ -33,7 +33,7 @@ exports.findUser = async (request, response) => {
       },
     });
 
-    if (!users.userID) {
+    if (!users) {
       return response
         .status(404)
         .send(ResponseData(true, "User tidak ditemukan", null, null));

@@ -20,6 +20,7 @@ exports.getAllApp = async (request, response) => {
     });
 
     const formattedData = dataApp.map((app) => ({
+      id: app.aplikasiID,
       nama: app.nama,
       image: app.image,
       deskripsi: app.deskripsi,
@@ -68,6 +69,7 @@ exports.findApp = async (request, response) => {
     }
 
     const formattedData = dataAplikasi.map((app) => ({
+      id: app.aplikasiID,
       nama: app.nama,
       image: app.image,
       deskripsi: app.deskripsi,
