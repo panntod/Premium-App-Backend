@@ -9,7 +9,7 @@ exports.getAllUser = async (request, response) => {
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh data user", null, users)
+        ResponseData(true, "Sukses mengambil seluruh data user", null, users),
       );
   } catch (error) {
     console.log(error);
@@ -78,18 +78,25 @@ exports.updateUser = async (request, response) => {
     let newUser = {
       username: request.body.username,
       nama: request.body.nama,
-      password: request.body.password,
-      confirmPassword: request.body.password,
       role: request.body.role,
     };
+
+    if (request.body.password) {
+      newUser = {
+        password: await PasswordHashing(request.body.password),
+      };
+    }
+
     const existingUser = await userModel.findOne({
       where: { userID: userID },
     });
+
     if (!existingUser) {
       return response
         .status(404)
         .send(ResponseData(true, "User tidak ditemukan", null, null));
     }
+
     await userModel.update(newUser, { where: { userID: userID } });
     return response
       .status(201)
@@ -133,12 +140,52 @@ exports.topUpSaldo = async (request, response) => {
     }
     await userModel.update(
       { saldo: request.body.saldo },
-      { where: { userID: userID } }
+      { where: { userID: userID } },
     );
 
     return response
       .status(201)
       .send(ResponseData(true, "Sukses menambahkan saldo user", null, null));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.getMe = async (request, response) => {
+  try {
+    const usernameUser = request.body.username;
+
+    if (!usernameUser) {
+      return response
+        .status(401)
+        .send(ResponseData(false, "Parameter Harus Valid", null, null));
+    }
+
+    const findUser = await userModel.findOne({
+      where: { username: usernameUser },
+    });
+
+    if (!findUser) {
+      return response
+        .status(401)
+        .send(ResponseData(false, "Anda Belum Login", null, null));
+    }
+
+    const responseData = {
+      userID: findUser.userID,
+      nama: findUser.nama,
+      saldo: findUser.saldo,
+      role: findUser.role,
+    };
+
+    return response
+      .status(201)
+      .send(
+        ResponseData(true, "Sukses menambahkan saldo user", null, responseData),
+      );
   } catch (error) {
     console.log(error);
     return response
