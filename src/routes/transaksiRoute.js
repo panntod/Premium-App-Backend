@@ -16,7 +16,11 @@ router.get(
   authorization, 
   transaksiController.getTransaksiById
 );
-
+router.post(
+  "/filterTransaksi",
+  authorization,
+  transaksiController.filterTransaksi
+);
 router.post(
   "/",
   authorization,
