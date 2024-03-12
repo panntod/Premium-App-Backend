@@ -116,8 +116,8 @@ exports.getAllTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData,
-        ),
+          formattedData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -153,7 +153,7 @@ exports.getTransaksiById = async (request, response) => {
       return response
         .status(404)
         .send(
-          ResponseData(false, "Gagal mendapatkan data transaksi", null, null),
+          ResponseData(false, "Gagal mendapatkan data transaksi", null, null)
         );
     }
 
@@ -183,8 +183,76 @@ exports.getTransaksiById = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData,
-        ),
+          formattedData
+        )
+      );
+  } catch (error) {
+    console.error(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.filterTransaksi = async (request, response) => {
+  try {
+    const { startDate, endDate } = request.body;
+
+    const endDateWithTime = new Date(endDate);
+    endDateWithTime.setHours(23, 59, 59, 999);
+
+    const dataTransaksi = await transaksiModel.findAll({
+      where: {
+        tgl_transaksi: {
+          [Op.between]: [startDate, endDateWithTime],
+        },
+      },
+      include: [
+        {
+          model: userModel,
+          as: "userTransaksi",
+        },
+        {
+          model: detailTransaksiModel,
+          as: "detailTransaksi",
+        },
+        {
+          model: aplikasiModel,
+          as: "aplikasiTransaksi",
+        },
+      ],
+      where: { userID: userID },
+      order: [["createdAt", "DESC"]],
+    });
+
+    const formattedData = dataTransaksi.map((transaksi) => {
+      const firstDetail = transaksi.detailTransaksi[0];
+
+      return {
+        transaksiID: transaksi.transaksiID,
+        detailTransaksiID: firstDetail ? firstDetail.detail_transaksiID : null,
+        status: transaksi.status,
+        namaUser: transaksi.userTransaksi.nama,
+        username: transaksi.userTransaksi.username,
+        namaAplikasi: transaksi.aplikasiTransaksi.nama,
+        durasi: firstDetail ? firstDetail.durasi : null,
+        harga: firstDetail ? firstDetail.harga : null,
+        totalHarga: firstDetail ? firstDetail.total_harga : null,
+        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
+        image: transaksi.aplikasiTransaksi.image,
+        tgl: transaksi.tgl,
+      };
+    });
+
+    return response
+      .status(200)
+      .send(
+        ResponseData(
+          true,
+          "Sukses mendapatkan semua data transaksi",
+          null,
+          formattedData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -234,11 +302,11 @@ exports.updateStatusTransaksi = async (request, response) => {
 
     await userModel.update(
       { saldo: sisaSaldo },
-      { where: { userID: existingUser.userID } },
+      { where: { userID: existingUser.userID } }
     );
     await transaksiModel.update(
       { status: "lunas" },
-      { where: { transaksiID: existingTransaksi.transaksiID } },
+      { where: { transaksiID: existingTransaksi.transaksiID } }
     );
 
     const responseData = {
@@ -257,8 +325,8 @@ exports.updateStatusTransaksi = async (request, response) => {
           true,
           "Sukses mengupdate status data transaksi",
           null,
-          responseData,
-        ),
+          responseData
+        )
       );
   } catch (error) {
     console.error(error);
