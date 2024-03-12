@@ -1,4 +1,4 @@
-const chalk = require("chalk")
+const chalk = require("chalk");
 
 const customLog = (action, data, error) => {
   let color;
@@ -38,7 +38,7 @@ const logMiddleware = (req, res, next) => {
       customLog("create", { endpoint: originalUrl, data: body });
       break;
     case "PUT":
-      customLog("update", { endpoint: originalUrl });
+      customLog("update", { endpoint: originalUrl, data: body });
       break;
     case "PATCH":
       customLog("change", { endpoint: originalUrl });

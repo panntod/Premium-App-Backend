@@ -9,6 +9,7 @@ const registerValidationRules = {
   password: "required|string|min:8|alpha_num",
   confirmPassword: "required|same:password",
 };
+
 exports.registerValidation = async (request, response, next) => {
   try {
     const userData = {
@@ -40,8 +41,50 @@ exports.registerValidation = async (request, response, next) => {
       return response
         .status(400)
         .send(
-          ResponseData(false, "Bad request", ["Username Sudah Digunakan"], null)
+          ResponseData(
+            false,
+            "Bad request",
+            ["Username Sudah Digunakan"],
+            null,
+          ),
         );
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, "", [error.message], null));
+  }
+};
+
+const updateUserValidationRules = {
+  nama: "string|max:50",
+  role: "in:user,admin",
+  username: "string|max:50",
+  password: "string|min:8|alpha_num",
+  confirmPassword: "required_with:password|string|same:password",
+};
+
+exports.updateUserValidation = async (request, response, next) => {
+  try {
+    const userData = {
+      nama: request.body.nama,
+      role: request.body.role,
+      username: request.body.username,
+      password: request.body.password,
+      confirmPassword: request.body.confirmPassword,
+    };
+
+    const validate = new Validator(userData, updateUserValidationRules);
+
+    if (validate.fails()) {
+      const errorMessages = Object.values(validate.errors.errors).flat();
+
+      return response
+        .status(400)
+        .send(ResponseData(false, "Bad Request", errorMessages, null));
     }
 
     next();
@@ -86,7 +129,7 @@ exports.tierValidation = async (request, response, next) => {
       return response
         .status(400)
         .send(
-          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null)
+          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null),
         );
     }
 
@@ -96,7 +139,7 @@ exports.tierValidation = async (request, response, next) => {
     return response
       .status(500)
       .send(
-        ResponseData(false, "Internal Server Error", [error.message], null)
+        ResponseData(false, "Internal Server Error", [error.message], null),
       );
   }
 };
@@ -133,7 +176,7 @@ exports.transactionValidation = async (request, response, next) => {
     return response
       .status(500)
       .send(
-        ResponseData(false, "Internal Server Error", [error.message], null)
+        ResponseData(false, "Internal Server Error", [error.message], null),
       );
   }
 };
@@ -167,7 +210,7 @@ exports.topUpValidation = async (request, response, next) => {
     return response
       .status(500)
       .send(
-        ResponseData(false, "Internal Server Error", [error.message], null)
+        ResponseData(false, "Internal Server Error", [error.message], null),
       );
   }
 };
