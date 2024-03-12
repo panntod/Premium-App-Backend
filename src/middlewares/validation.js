@@ -41,12 +41,7 @@ exports.registerValidation = async (request, response, next) => {
       return response
         .status(400)
         .send(
-          ResponseData(
-            false,
-            "Bad request",
-            ["Username Sudah Digunakan"],
-            null,
-          ),
+          ResponseData(false, "Bad request", ["Username Sudah Digunakan"], null)
         );
     }
 
@@ -129,7 +124,7 @@ exports.tierValidation = async (request, response, next) => {
       return response
         .status(400)
         .send(
-          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null),
+          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null)
         );
     }
 
@@ -139,7 +134,7 @@ exports.tierValidation = async (request, response, next) => {
     return response
       .status(500)
       .send(
-        ResponseData(false, "Internal Server Error", [error.message], null),
+        ResponseData(false, "Internal Server Error", [error.message], null)
       );
   }
 };
@@ -176,7 +171,7 @@ exports.transactionValidation = async (request, response, next) => {
     return response
       .status(500)
       .send(
-        ResponseData(false, "Internal Server Error", [error.message], null),
+        ResponseData(false, "Internal Server Error", [error.message], null)
       );
   }
 };
@@ -210,7 +205,7 @@ exports.topUpValidation = async (request, response, next) => {
     return response
       .status(500)
       .send(
-        ResponseData(false, "Internal Server Error", [error.message], null),
+        ResponseData(false, "Internal Server Error", [error.message], null)
       );
   }
 };

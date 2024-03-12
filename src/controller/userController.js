@@ -9,7 +9,7 @@ exports.getAllUser = async (request, response) => {
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh data user", null, users),
+        ResponseData(true, "Sukses mengambil seluruh data user", null, users)
       );
   } catch (error) {
     console.log(error);
@@ -82,9 +82,7 @@ exports.updateUser = async (request, response) => {
     };
 
     if (request.body.password) {
-      newUser = {
-        password: await PasswordHashing(request.body.password),
-      };
+      newUser.password = await PasswordHashing(request.body.password);
     }
 
     const existingUser = await userModel.findOne({
@@ -140,7 +138,7 @@ exports.topUpSaldo = async (request, response) => {
         .send(ResponseData(false, "User tidak ditemukan", null, null));
     }
 
-    const currentSaldo = findUser.saldo || 0; 
+    const currentSaldo = findUser.saldo || 0;
     const additionalSaldo = parseFloat(request.body.saldo);
 
     if (isNaN(additionalSaldo) || additionalSaldo <= 0) {
@@ -153,7 +151,7 @@ exports.topUpSaldo = async (request, response) => {
 
     await userModel.update(
       { saldo: newSaldo },
-      { where: { username: username } },
+      { where: { username: username } }
     );
 
     return response
@@ -166,7 +164,6 @@ exports.topUpSaldo = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
-
 
 exports.getMe = async (request, response) => {
   try {
@@ -199,7 +196,7 @@ exports.getMe = async (request, response) => {
     return response
       .status(201)
       .send(
-        ResponseData(true, "Sukses menambahkan saldo user", null, responseData),
+        ResponseData(true, "Sukses menambahkan saldo user", null, responseData)
       );
   } catch (error) {
     console.log(error);
