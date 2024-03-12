@@ -6,7 +6,7 @@ const { tierValidation } = require("../middlewares/validation");
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 
 router.get("/", authorization, adminOnly, tierController.getAllTier);
-router.post("/find/:tierID", authorization, tierController.findTier);
+router.post("/find/", authorization, tierController.findTier);
 router.post("/", authorization, adminOnly, tierValidation, tierController.addTier);
 router.put("/:id", authorization, adminOnly, tierController.updateTier);
 router.delete("/:id", authorization, adminOnly, tierController.deleteTier);
