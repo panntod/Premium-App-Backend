@@ -21,7 +21,7 @@ exports.getAllUser = async (request, response) => {
 
 exports.findUser = async (request, response) => {
   try {
-    let keyword = request.body.key;
+    let keyword = request.body.keyword;
     let users = await userModel.findAll({
       where: {
         [Op.or]: [
