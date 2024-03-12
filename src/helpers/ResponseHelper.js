@@ -19,10 +19,10 @@ exports.ExtractToken = (token) => {
     const decodedToken = jwt.verify(token, process.env.APP_SECRET);
     return decodedToken;
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      return { error: 'Token sudah expired, Harap perbarui token' };
+    if (error.name === "TokenExpiredError") {
+      return { error: "Token sudah expired, Harap perbarui token" };
     } else {
-      console.error('Token verification failed:', error.message);
+      console.error("Token verification failed:", error.message);
       return null;
     }
   }

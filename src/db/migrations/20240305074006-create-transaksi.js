@@ -32,7 +32,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM("draft", "lunas"),
-        defaultValue: "draft"
+        defaultValue: "draft",
       },
       createdAt: {
         allowNull: false,
