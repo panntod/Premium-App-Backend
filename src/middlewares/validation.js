@@ -81,7 +81,17 @@ exports.updateUserValidation = async (request, response, next) => {
         .status(400)
         .send(ResponseData(false, "Bad Request", errorMessages, null));
     }
+    const existingUsername = await userModel.findOne({
+      where: { username: userData.username },
+    });
 
+    if (existingUsername) {
+      return response
+        .status(400)
+        .send(
+          ResponseData(false, "Bad request", ["Username Sudah Digunakan"], null)
+        );
+    }
     next();
   } catch (error) {
     console.error(error);
