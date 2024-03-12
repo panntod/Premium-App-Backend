@@ -148,9 +148,10 @@ exports.tierValidation = async (request, response, next) => {
       );
   }
 };
+
 const transactionValidationRules = {
-  userID: "required|numeric",
-  aplikasiID: "required|numeric",
+  userID: "required|string",
+  aplikasiID: "required|string",
   durasi: "required|numeric",
 };
 
