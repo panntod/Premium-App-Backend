@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
   class tier extends Model {
     static associate(models) {
@@ -14,12 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   tier.init(
     {
       tierID: {
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: () => uuidv4(),
         primaryKey: true,
-        type: DataTypes.BIGINT,
       },
       harga: DataTypes.BIGINT,
       nama: DataTypes.STRING,
@@ -27,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "tier",
-    },
+    }
   );
+
   return tier;
 };

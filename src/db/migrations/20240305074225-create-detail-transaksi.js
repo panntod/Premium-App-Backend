@@ -1,16 +1,17 @@
 "use strict";
-/** @type {import('sequelize-cli').Migration} */
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("detail_transaksis", {
       detail_transaksiID: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
+        defaultValue: uuidv4(),
       },
       transaksiID: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "transaksis",
@@ -18,7 +19,7 @@ module.exports = {
         },
       },
       aplikasiID: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "aplikasis",
@@ -26,7 +27,7 @@ module.exports = {
         },
       },
       tierID: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "tiers",

@@ -21,9 +21,9 @@ module.exports = (sequelize, DataTypes) => {
   transaksi.init(
     {
       transaksiID: {
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: () => uuidv4(),
         primaryKey: true,
-        type: DataTypes.BIGINT,
       },
       tgl: DataTypes.DATE,
       userID: DataTypes.BIGINT,

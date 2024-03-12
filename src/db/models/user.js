@@ -1,5 +1,6 @@
-"use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
     static associate(models) {
@@ -10,12 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   user.init(
     {
       userID: {
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: () => uuidv4(),
         primaryKey: true,
-        type: DataTypes.BIGINT,
       },
       username: DataTypes.STRING,
       password: DataTypes.STRING,
@@ -26,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "user",
-    },
+    }
   );
+
   return user;
 };

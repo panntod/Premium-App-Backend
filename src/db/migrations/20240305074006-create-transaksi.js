@@ -1,13 +1,14 @@
 "use strict";
-/** @type {import('sequelize-cli').Migration} */
+const { v4: uuidv4 } = require("uuid");
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("transaksis", {
       transaksiID: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
+        defaultValue: uuidv4(),
       },
       tgl: {
         allowNull: false,
@@ -15,7 +16,7 @@ module.exports = {
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       userID: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "users",
@@ -23,7 +24,7 @@ module.exports = {
         },
       },
       aplikasiID: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: "aplikasis",
