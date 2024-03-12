@@ -1,9 +1,10 @@
+const { Op } = require("sequelize");
+const { ResponseData } = require("../helpers/ResponseHelper");
 const {
   tier: tierModel,
   detail_transaksi: detailTransaksiModel,
   transaksi: transaksiModel,
 } = require("../db/models/index");
-const { ResponseData } = require("../helpers/ResponseHelper");
 
 exports.getAllTier = async (request, response) => {
   try {
@@ -23,15 +24,18 @@ exports.getAllTier = async (request, response) => {
 
 exports.findTier = async (request, response) => {
   try {
-    let tierID = request.params.tierID;
-    let tiers = await tierModel.findAll({
+    const keyword = request.body.keyword;
+    const tiers = await tierModel.findAll({
       where: {
-        tierID: tierID,
+        [Op.or]: [
+          { tierID: { [Op.substring]: keyword } },
+          { nama: { [Op.substring]: keyword } },
+          { harga: { [Op.substring]: keyword } },
+        ],
       },
     });
-    const findTier = await tierModel.findOne({ where: { tierID: tierID } });
 
-    if (!findTier) {
+    if (!tiers.length) {
       return response
         .status(404)
         .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
@@ -47,6 +51,7 @@ exports.findTier = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
+
 
 exports.addTier = async (request, response) => {
   try {
