@@ -1,28 +1,38 @@
 const express = require(`express`);
-const app = express();
-app.use(express.json());
+const router = express.Router();
 const transaksiController = require(`../controller/transaksiController`);
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 const { transactionValidation } = require("../middlewares/validation");
 
-app.get("/", authorization, adminOnly, transaksiController.getAllTransaksi);
-app.get("/find/:userID", authorization, transaksiController.getTransaksiById);
-app.post(
+router.get(
+  "/", 
+  authorization, 
+  adminOnly, 
+  transaksiController.getAllTransaksi
+);
+
+router.get(
+  "/find/:userID", 
+  authorization, 
+  transaksiController.getTransaksiById
+);
+
+router.post(
   "/",
   authorization,
   transactionValidation,
   transaksiController.addTransaksi
 );
-app.put(
+router.put(
   "/:transaksiID",
   authorization,
   transaksiController.updateStatusTransaksi
 );
-app.delete(
+router.delete(
   "/:transaksiID",
   authorization,
   adminOnly,
   transaksiController.deleteTransaksi
 );
 
-module.exports = app;
+module.exports = router;

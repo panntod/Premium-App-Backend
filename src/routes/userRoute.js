@@ -1,29 +1,53 @@
 const express = require(`express`);
-const app = express();
-app.use(express.json());
+const router = express.Router();
 const userController = require(`../controller/userController`);
 const {
   registerValidation,
-  topUpValidation
+  topUpValidation,
+  updateUserValidation,
 } = require("../middlewares/validation");
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 
-app.get("/", authorization, adminOnly, userController.getAllUser);
-app.post("/find", authorization, adminOnly, userController.findUser);
-app.post("/", registerValidation, userController.addUser);
-app.post(
+router.get(
+  "/", 
+  authorization, 
+  adminOnly, 
+  userController.getAllUser
+);
+
+router.get(
+  "/me", 
+  authorization, 
+  userController.getMe
+);
+
+router.post(
+  "/find", 
+  authorization, 
+  adminOnly, 
+  userController.findUser
+);
+
+router.post(
+  "/", 
+  registerValidation, 
+  userController.addUser
+);
+
+router.post(
   "/topUp/:userID",
   authorization,
   topUpValidation,
-  userController.topUpSaldo
+  userController.topUpSaldo,
 );
-app.put(
+
+router.put(
   "/:id",
   authorization,
   adminOnly,
-  registerValidation,
-  userController.updateUser
+  updateUserValidation,
+  userController.updateUser,
 );
-app.delete("/:id", authorization, adminOnly, userController.deleteUser);
+router.delete("/:id", authorization, adminOnly, userController.deleteUser);
 
-module.exports = app;
+module.exports = router;

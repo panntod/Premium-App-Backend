@@ -1,15 +1,15 @@
 const express = require(`express`);
-const app = express();
-app.use(express.json());
+const router = express.Router();
 
 const aplikasiController = require(`../controller/aplikasiController`);
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 
-app.get("/", aplikasiController.getAllApp);
-app.get("/statistik", aplikasiController.getStatistik);
-app.post("/find", aplikasiController.findApp);
-app.post("/", authorization, adminOnly, aplikasiController.addAplikasi);
-app.put("/:id", authorization, adminOnly, aplikasiController.updateAplikasi);
-app.delete("/:id", authorization, adminOnly, aplikasiController.deleteAplikasi);
+router.get("/", aplikasiController.getAllApp);
+router.get("/statistik", aplikasiController.getStatistik);
+router.get("/tier", aplikasiController.getTierData);
+router.post("/find", aplikasiController.findApp);
+router.post("/", authorization, adminOnly, aplikasiController.addAplikasi);
+router.put("/:id", authorization, adminOnly, aplikasiController.updateAplikasi);
+router.delete("/:id", authorization, adminOnly, aplikasiController.deleteAplikasi);
 
-module.exports = app;
+module.exports = router;
