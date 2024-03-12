@@ -131,28 +131,42 @@ exports.deleteUser = async (request, response) => {
 
 exports.topUpSaldo = async (request, response) => {
   try {
-    const userID = request.params.userID;
-    const findUser = await userModel.findOne({ where: { userID: userID } });
+    const username = request.params.username;
+    const findUser = await userModel.findOne({ where: { username: username } });
+
     if (!findUser) {
       return response
         .status(404)
         .send(ResponseData(false, "User tidak ditemukan", null, null));
     }
+
+    const currentSaldo = findUser.saldo || 0; 
+    const additionalSaldo = parseFloat(request.body.saldo);
+
+    if (isNaN(additionalSaldo) || additionalSaldo <= 0) {
+      return response
+        .status(400)
+        .send(ResponseData(false, "Jumlah top up tidak valid", null, null));
+    }
+
+    const newSaldo = currentSaldo + additionalSaldo;
+
     await userModel.update(
-      { saldo: request.body.saldo },
-      { where: { userID: userID } },
+      { saldo: newSaldo },
+      { where: { username: username } },
     );
 
     return response
       .status(201)
-      .send(ResponseData(true, "Sukses menambahkan saldo user", null, null));
+      .send(ResponseData(true, "Sukses menambahkan saldo", null, null));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return response
       .status(500)
       .send(ResponseData(false, error.message, error, null));
   }
 };
+
 
 exports.getMe = async (request, response) => {
   try {
@@ -176,6 +190,7 @@ exports.getMe = async (request, response) => {
 
     const responseData = {
       userID: findUser.userID,
+      username: findUser.username,
       nama: findUser.nama,
       saldo: findUser.saldo,
       role: findUser.role,
