@@ -24,6 +24,7 @@ exports.getAllApp = async (request, response) => {
       nama: app.nama,
       image: app.image,
       deskripsi: app.deskripsi,
+      tierID: app.tierAplikasi.tierID,
       tier: app.tierAplikasi.nama,
       harga: app.tierAplikasi.harga,
     }));
@@ -35,8 +36,8 @@ exports.getAllApp = async (request, response) => {
           true,
           "Sukses mengambil seluruh aplikasi",
           null,
-          formattedData
-        )
+          formattedData,
+        ),
       );
   } catch (error) {
     console.error(error);
@@ -73,6 +74,7 @@ exports.findApp = async (request, response) => {
       nama: app.nama,
       image: app.image,
       deskripsi: app.deskripsi,
+      tierID: app.tierAplikasi.tierID,
       tier: app.tierAplikasi.nama,
       harga: app.tierAplikasi.harga,
     }));
@@ -211,15 +213,22 @@ exports.deleteAplikasi = async (request, response) => {
     const dataApp = await aplikasiModel.findOne({
       where: { aplikasiID: appID },
     });
+
     if (!dataApp) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
+
     const oldImage = dataApp.image;
     const pathImage = path.join(__dirname, `../images`, oldImage);
-    if (fs.existsSync(pathImage)) {
-      fs.unlink(pathImage, (error) => console.log(error));
+
+    try {
+      await fs.access(pathImage); // Menggunakan fs.access untuk memeriksa keberadaan file
+      await fs.unlink(pathImage);
+      console.log(`File ${pathImage} dihapus.`);
+    } catch (error) {
+      console.error(`Gagal menghapus file ${pathImage}.`, error);
     }
 
     await aplikasiModel.destroy({ where: { aplikasiID: appID } });
@@ -248,7 +257,27 @@ exports.getStatistik = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
+      );
+  } catch (error) {
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.getTierData = async (request, response) => {
+  try {
+    const dataTier = await tierModel.findAll();
+    const responseData = dataTier.map((data) => ({
+      id: data.tierID,
+      nama: data.nama,
+    }));
+
+    response
+      .status(200)
+      .send(
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
       );
   } catch (error) {
     return response
