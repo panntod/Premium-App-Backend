@@ -15,7 +15,7 @@ router.get(
   userController.getAllUser
 );
 
-router.get(
+router.post(
   "/me", 
   authorization, 
   userController.getMe
@@ -35,7 +35,7 @@ router.post(
 );
 
 router.post(
-  "/topUp/:userID",
+  "/topUp/:username",
   authorization,
   topUpValidation,
   userController.topUpSaldo,
