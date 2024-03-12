@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2024 at 01:55 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Waktu pembuatan: 12 Mar 2024 pada 17.20
+-- Versi server: 10.4.28-MariaDB
+-- Versi PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,13 +24,13 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `aplikasis`
+-- Struktur dari tabel `aplikasis`
 --
 
 CREATE TABLE `aplikasis` (
-  `aplikasiID` bigint(20) NOT NULL,
+  `aplikasiID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '995697fb-86a2-48b8-8d9a-a82302390e66',
   `nama` varchar(255) DEFAULT NULL,
-  `tierID` bigint(20) NOT NULL,
+  `tierID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `image` text DEFAULT NULL,
   `deskripsi` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -38,28 +38,28 @@ CREATE TABLE `aplikasis` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `aplikasis`
+-- Dumping data untuk tabel `aplikasis`
 --
 
 INSERT INTO `aplikasis` (`aplikasiID`, `nama`, `tierID`, `image`, `deskripsi`, `createdAt`, `updatedAt`) VALUES
-(1, 'Spotify', 1, 'images-1710116545608.jpg', 'Spotify Pro', '2024-03-10 15:02:12', '2024-03-11 00:22:25'),
-(2, 'Netflix', 1, 'images-1710116714124.png', 'Netflix Premium', '2024-03-10 15:05:33', '2024-03-11 00:25:14'),
-(3, 'Disney+', 2, 'images-1710116735150.jpg', 'Disney+ Basic', '2024-03-10 15:08:35', '2024-03-11 00:25:35'),
-(4, 'Apple TV+', 2, 'images-1710116772106.png', 'Apple TV Pass', '2024-03-10 15:13:01', '2024-03-11 00:26:12'),
-(5, 'Youtube', 3, 'images-1710116812027.png', 'Youtube Premium', '2024-03-10 15:14:02', '2024-03-11 00:26:52'),
-(6, 'Apple Music', 3, 'images-1710116976602.png', 'Apple Music Plus', '2024-03-10 15:15:47', '2024-03-11 00:29:36');
+('390a978a-5c7f-47b4-bfbc-c7dc2d17efc5', 'Apple TV+', '7e945eb4-af60-4e48-b665-d691824785a3', 'images-1710259974595.png', 'Apple TV Plus', '2024-03-12 16:12:54', '2024-03-12 16:12:54'),
+('46cf0a00-7493-4b94-8114-b37ee5205071', 'Youtube', 'e75f9912-0f6f-4d55-879a-6f2bec21173d', 'images-1710260120909.png', 'Youtube Premium', '2024-03-12 16:15:20', '2024-03-12 16:15:20'),
+('8c85bf26-ca84-48f9-b226-94820c286898', 'Apple Music', 'e75f9912-0f6f-4d55-879a-6f2bec21173d', 'images-1710260095626.png', 'Apple Music Premium', '2024-03-12 16:14:55', '2024-03-12 16:14:55'),
+('93211337-1460-4456-9c3b-e4407311894d', 'Disney+', '7e945eb4-af60-4e48-b665-d691824785a3', 'images-1710260030336.jpg', 'Disney+ Monthly Pass ', '2024-03-12 16:13:50', '2024-03-12 16:13:50'),
+('bf4ff5c6-71be-45ad-aad3-071c8ff2629a', 'Netflix', 'd01d1142-2272-4b43-bb41-0f9b734b7d10', 'images-1710259775096.png', 'Netflix Premium', '2024-03-12 16:09:35', '2024-03-12 16:09:35'),
+('cc9464fe-e47e-4c89-b982-1a646ad7f0f4', 'Spotify', 'd01d1142-2272-4b43-bb41-0f9b734b7d10', 'images-1710259873564.jpg', 'Spotify Pro', '2024-03-12 16:11:13', '2024-03-12 16:11:13');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detail_transaksis`
+-- Struktur dari tabel `detail_transaksis`
 --
 
 CREATE TABLE `detail_transaksis` (
-  `detail_transaksiID` bigint(20) NOT NULL,
-  `transaksiID` bigint(20) NOT NULL,
-  `aplikasiID` bigint(20) NOT NULL,
-  `tierID` bigint(20) NOT NULL,
+  `detail_transaksiID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'ac0985c1-7a8a-4177-9961-157525d62ac3',
+  `transaksiID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `aplikasiID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `tierID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `harga` bigint(20) DEFAULT NULL,
   `durasi` bigint(20) DEFAULT NULL,
   `total_harga` bigint(20) DEFAULT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE `detail_transaksis` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sequelizemeta`
+-- Struktur dari tabel `sequelizemeta`
 --
 
 CREATE TABLE `sequelizemeta` (
@@ -78,7 +78,7 @@ CREATE TABLE `sequelizemeta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `sequelizemeta`
+-- Dumping data untuk tabel `sequelizemeta`
 --
 
 INSERT INTO `sequelizemeta` (`name`) VALUES
@@ -91,11 +91,11 @@ INSERT INTO `sequelizemeta` (`name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tiers`
+-- Struktur dari tabel `tiers`
 --
 
 CREATE TABLE `tiers` (
-  `tierID` bigint(20) NOT NULL,
+  `tierID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '18efa47c-bcc9-4dcd-ab7c-6d9f010f9916',
   `harga` bigint(20) DEFAULT NULL,
   `nama` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
@@ -103,25 +103,25 @@ CREATE TABLE `tiers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `tiers`
+-- Dumping data untuk tabel `tiers`
 --
 
 INSERT INTO `tiers` (`tierID`, `harga`, `nama`, `createdAt`, `updatedAt`) VALUES
-(1, 43000, 'Common', '2024-03-10 14:59:33', '2024-03-10 14:59:33'),
-(2, 57000, 'Rare', '2024-03-10 14:59:59', '2024-03-10 14:59:59'),
-(3, 70000, 'Premium', '2024-03-10 15:00:28', '2024-03-10 15:00:28');
+('7e945eb4-af60-4e48-b665-d691824785a3', 57000, 'Rare', '2024-03-12 15:34:40', '2024-03-12 15:34:40'),
+('d01d1142-2272-4b43-bb41-0f9b734b7d10', 43000, 'Common', '2024-03-12 15:30:01', '2024-03-12 15:30:01'),
+('e75f9912-0f6f-4d55-879a-6f2bec21173d', 70000, 'Premium', '2024-03-12 15:35:02', '2024-03-12 15:35:02');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transaksis`
+-- Struktur dari tabel `transaksis`
 --
 
 CREATE TABLE `transaksis` (
-  `transaksiID` bigint(20) NOT NULL,
+  `transaksiID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '02259936-86a7-4f6e-8a93-7495f0c9fe4b',
   `tgl` timestamp NOT NULL DEFAULT current_timestamp(),
-  `userID` bigint(20) NOT NULL,
-  `aplikasiID` bigint(20) NOT NULL,
+  `userID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `aplikasiID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `status` enum('draft','lunas') DEFAULT 'draft',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
@@ -130,11 +130,11 @@ CREATE TABLE `transaksis` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktur dari tabel `users`
 --
 
 CREATE TABLE `users` (
-  `userID` bigint(20) NOT NULL,
+  `userID` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'e6e877c9-f1d3-439f-ac39-ccee6fe6cd3d',
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `nama` varchar(255) DEFAULT NULL,
@@ -145,26 +145,25 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data untuk tabel `users`
 --
 
 INSERT INTO `users` (`userID`, `username`, `password`, `nama`, `saldo`, `role`, `createdAt`, `updatedAt`) VALUES
-(2, 'pandhu', '$2b$10$dZSsM4VW3yYIRxH.hX3AteAh9jfnh.xTHfyrmxn0W/B5MyZNch/OS', 'pandhu', 0, 'admin', '2024-03-10 15:51:31', '2024-03-10 15:51:31'),
-(3, 'asfina', '$2b$10$EVQmQG8iCGb2srEKLC/mB.4DaMJ8ZSjP4uE92trk7c1RpJX4XZ906', 'asfina', 0, 'admin', '2024-03-10 15:51:43', '2024-03-10 15:51:43');
+('66f899dd-1eed-42c3-bdd8-94bf24c30aa4', 'admin baik hati', '$2b$10$VfZOzuT6alGijuApioQVx.ThzJdVTPyxj3B1vs6qrdi4B..duRjA6', 'Gradak', 0, 'admin', '2024-03-12 15:27:21', '2024-03-12 15:27:21');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `aplikasis`
+-- Indeks untuk tabel `aplikasis`
 --
 ALTER TABLE `aplikasis`
   ADD PRIMARY KEY (`aplikasiID`),
   ADD KEY `tierID` (`tierID`);
 
 --
--- Indexes for table `detail_transaksis`
+-- Indeks untuk tabel `detail_transaksis`
 --
 ALTER TABLE `detail_transaksis`
   ADD PRIMARY KEY (`detail_transaksiID`),
@@ -173,20 +172,20 @@ ALTER TABLE `detail_transaksis`
   ADD KEY `tierID` (`tierID`);
 
 --
--- Indexes for table `sequelizemeta`
+-- Indeks untuk tabel `sequelizemeta`
 --
 ALTER TABLE `sequelizemeta`
   ADD PRIMARY KEY (`name`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `tiers`
+-- Indeks untuk tabel `tiers`
 --
 ALTER TABLE `tiers`
   ADD PRIMARY KEY (`tierID`);
 
 --
--- Indexes for table `transaksis`
+-- Indeks untuk tabel `transaksis`
 --
 ALTER TABLE `transaksis`
   ADD PRIMARY KEY (`transaksiID`),
@@ -194,57 +193,23 @@ ALTER TABLE `transaksis`
   ADD KEY `aplikasiID` (`aplikasiID`);
 
 --
--- Indexes for table `users`
+-- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`userID`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- AUTO_INCREMENT for table `aplikasis`
---
-ALTER TABLE `aplikasis`
-  MODIFY `aplikasiID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `detail_transaksis`
---
-ALTER TABLE `detail_transaksis`
-  MODIFY `detail_transaksiID` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `tiers`
---
-ALTER TABLE `tiers`
-  MODIFY `tierID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `transaksis`
---
-ALTER TABLE `transaksis`
-  MODIFY `transaksiID` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `userID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `aplikasis`
+-- Ketidakleluasaan untuk tabel `aplikasis`
 --
 ALTER TABLE `aplikasis`
   ADD CONSTRAINT `aplikasis_ibfk_1` FOREIGN KEY (`tierID`) REFERENCES `tiers` (`tierID`);
 
 --
--- Constraints for table `detail_transaksis`
+-- Ketidakleluasaan untuk tabel `detail_transaksis`
 --
 ALTER TABLE `detail_transaksis`
   ADD CONSTRAINT `detail_transaksis_ibfk_1` FOREIGN KEY (`transaksiID`) REFERENCES `transaksis` (`transaksiID`),
@@ -252,7 +217,7 @@ ALTER TABLE `detail_transaksis`
   ADD CONSTRAINT `detail_transaksis_ibfk_3` FOREIGN KEY (`tierID`) REFERENCES `tiers` (`tierID`);
 
 --
--- Constraints for table `transaksis`
+-- Ketidakleluasaan untuk tabel `transaksis`
 --
 ALTER TABLE `transaksis`
   ADD CONSTRAINT `transaksis_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`),
