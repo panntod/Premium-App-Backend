@@ -11,7 +11,7 @@ exports.getAllTier = async (request, response) => {
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh data tier", null, tiers)
+        ResponseData(true, "Sukses mengambil seluruh data tier", null, tiers),
       );
   } catch (error) {
     console.log(error);
@@ -36,7 +36,7 @@ exports.findTier = async (request, response) => {
         .status(404)
         .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
     }
-    
+
     return response
       .status(200)
       .send(ResponseData(true, "Sukses mendapatkan data tier", null, tiers));
@@ -100,7 +100,7 @@ exports.updateTier = async (request, response) => {
       if (status === "draft") {
         await detailTransaksiModel.update(
           { harga: newTier.harga, total_harga: updatedTotalHarga },
-          { where: { detail_transaksiID: existingDetail.detail_transaksiID } }
+          { where: { detail_transaksiID: existingDetail.detail_transaksiID } },
         );
       }
     }
