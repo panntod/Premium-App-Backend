@@ -75,19 +75,24 @@ exports.addUser = async (request, response) => {
 exports.updateUser = async (request, response) => {
   try {
     let userID = request.params.id;
-    let newUser = {
-      username: request.body.username,
-      nama: request.body.nama,
-      role: request.body.role,
-    };
-
-    if (request.body.password) {
-      newUser.password = await PasswordHashing(request.body.password);
-    }
-
+    
     const existingUser = await userModel.findOne({
       where: { userID: userID },
     });
+
+    let newUser = {
+      nama: request.body.nama,
+      role: request.body.role,
+      username: request.body.username
+    };
+    
+    if (request.body.password) {
+      newUser.password = await PasswordHashing(request.body.password);
+    }
+    
+    if(!request.body.username){
+      newUser.username = existingUser.username
+    }
 
     if (!existingUser) {
       return response

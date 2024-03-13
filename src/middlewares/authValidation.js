@@ -69,7 +69,6 @@ exports.authorization = async (req, res, next) => {
     let tokenKey = authToken.split(" ")[1];
 
     const decodedToken = ExtractToken(tokenKey);
-
     if (!decodedToken) {
       return res
         .status(401)
