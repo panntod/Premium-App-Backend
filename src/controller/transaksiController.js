@@ -6,6 +6,7 @@ const {
   aplikasi: aplikasiModel,
   tier: tierModel,
 } = require("../db/models/index");
+const { Op } = require("sequelize");
 
 exports.addTransaksi = async (request, response) => {
   try {
@@ -203,7 +204,7 @@ exports.filterTransaksi = async (request, response) => {
 
     const dataTransaksi = await transaksiModel.findAll({
       where: {
-        tgl_transaksi: {
+        tgl: {
           [Op.between]: [startDate, endDateWithTime],
         },
       },
@@ -221,7 +222,6 @@ exports.filterTransaksi = async (request, response) => {
           as: "aplikasiTransaksi",
         },
       ],
-      where: { userID: userID },
       order: [["createdAt", "DESC"]],
     });
 
