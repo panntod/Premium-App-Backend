@@ -8,11 +8,14 @@ const {
 
 exports.getAllTier = async (request, response) => {
   try {
-    let tiers = await tierModel.findAll();
+    let tiers = await tierModel.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh data tier", null, tiers),
+        ResponseData(true, "Sukses mengambil seluruh data tier", null, tiers)
       );
   } catch (error) {
     console.log(error);
@@ -51,7 +54,6 @@ exports.findTier = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
-
 
 exports.addTier = async (request, response) => {
   try {
@@ -105,7 +107,7 @@ exports.updateTier = async (request, response) => {
       if (status === "draft") {
         await detailTransaksiModel.update(
           { harga: newTier.harga, total_harga: updatedTotalHarga },
-          { where: { detail_transaksiID: existingDetail.detail_transaksiID } },
+          { where: { detail_transaksiID: existingDetail.detail_transaksiID } }
         );
       }
     }

@@ -5,7 +5,9 @@ const { PasswordHashing } = require("../helpers/PasswordHelper");
 
 exports.getAllUser = async (request, response) => {
   try {
-    let users = await userModel.findAll();
+    let users = await userModel.findAll({
+      order: [["createdAt", "DESC"]],
+    });
     return response
       .status(200)
       .send(

@@ -36,8 +36,8 @@ exports.getAllApp = async (request, response) => {
           true,
           "Sukses mengambil seluruh aplikasi",
           null,
-          formattedData,
-        ),
+          formattedData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -78,6 +78,44 @@ exports.findApp = async (request, response) => {
       tier: app.tierAplikasi.nama,
       harga: app.tierAplikasi.harga,
     }));
+
+    return response
+      .status(200)
+      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.findAppByID = async (request, response) => {
+  try {
+    let paramsID = request.params.aplikasiID;
+    let dataAplikasi = await aplikasiModel.findOne({
+      where: { aplikasiID: paramsID },
+      include: {
+        model: tierModel,
+        as: "tierAplikasi",
+      },
+    });
+
+    if (!dataAplikasi) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
+    }
+
+    const formattedData = {
+      id: dataAplikasi.aplikasiID,
+      nama: dataAplikasi.nama,
+      image: dataAplikasi.image,
+      deskripsi: dataAplikasi.deskripsi,
+      tierID: dataAplikasi.tierAplikasi.tierID,
+      tier: dataAplikasi.tierAplikasi.nama,
+      harga: dataAplikasi.tierAplikasi.harga,
+    };
 
     return response
       .status(200)
@@ -257,7 +295,7 @@ exports.getStatistik = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
       );
   } catch (error) {
     return response
@@ -277,7 +315,7 @@ exports.getTierData = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
       );
   } catch (error) {
     return response
