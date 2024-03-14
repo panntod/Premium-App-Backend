@@ -39,7 +39,7 @@ exports.authentication = async (req, res) => {
 
     const responseData = {
       id: dataUser.id,
-      nama_user: dataUser.nama_user,
+      nama: dataUser.nama,
       role: dataUser.role,
       username: dataUser.username,
       token: token,
