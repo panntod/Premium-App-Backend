@@ -90,6 +90,18 @@ exports.updateTier = async (request, response) => {
         .send(ResponseData(true, "Tier data tidak ditemukan", null, null));
     }
 
+    const existingName = await tierModel.findOne({
+      where: { nama: newTier.nama },
+    });
+
+    if (existingName) {
+      return response
+        .status(400)
+        .send(
+          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null),
+        );
+    }
+
     const existingDetailTransaksi = await detailTransaksiModel.findAll({
       where: { tierID: tierID },
       include: {
