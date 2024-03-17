@@ -11,7 +11,7 @@ exports.getAllUser = async (request, response) => {
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh data user", null, users)
+        ResponseData(true, "Sukses mengambil seluruh data user", null, users),
       );
   } catch (error) {
     console.log(error);
@@ -77,7 +77,7 @@ exports.addUser = async (request, response) => {
 exports.updateUser = async (request, response) => {
   try {
     let userID = request.params.id;
-    
+
     const existingUser = await userModel.findOne({
       where: { userID: userID },
     });
@@ -85,15 +85,15 @@ exports.updateUser = async (request, response) => {
     let newUser = {
       nama: request.body.nama,
       role: request.body.role,
-      username: request.body.username
+      username: request.body.username,
     };
-    
+
     if (request.body.password) {
       newUser.password = await PasswordHashing(request.body.password);
     }
-    
-    if(!request.body.username){
-      newUser.username = existingUser.username
+
+    if (!request.body.username) {
+      newUser.username = existingUser.username;
     }
 
     if (!existingUser) {
@@ -158,7 +158,7 @@ exports.topUpSaldo = async (request, response) => {
 
     await userModel.update(
       { saldo: newSaldo },
-      { where: { username: username } }
+      { where: { username: username } },
     );
 
     return response
@@ -203,7 +203,7 @@ exports.getMe = async (request, response) => {
     return response
       .status(201)
       .send(
-        ResponseData(true, "Sukses menambahkan saldo user", null, responseData)
+        ResponseData(true, "Sukses menambahkan saldo user", null, responseData),
       );
   } catch (error) {
     console.log(error);

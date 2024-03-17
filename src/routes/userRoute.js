@@ -8,31 +8,13 @@ const {
 } = require("../middlewares/validation");
 const { adminOnly, authorization } = require("../middlewares/authValidation");
 
-router.get(
-  "/", 
-  authorization, 
-  adminOnly, 
-  userController.getAllUser
-);
+router.get("/", authorization, adminOnly, userController.getAllUser);
 
-router.post(
-  "/me", 
-  authorization, 
-  userController.getMe
-);
+router.post("/me", authorization, userController.getMe);
 
-router.post(
-  "/find", 
-  authorization, 
-  adminOnly, 
-  userController.findUser
-);
+router.post("/find", authorization, adminOnly, userController.findUser);
 
-router.post(
-  "/", 
-  registerValidation, 
-  userController.addUser
-);
+router.post("/", registerValidation, userController.addUser);
 
 router.post(
   "/topUp/:username",

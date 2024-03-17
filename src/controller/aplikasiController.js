@@ -36,8 +36,8 @@ exports.getAllApp = async (request, response) => {
           true,
           "Sukses mengambil seluruh aplikasi",
           null,
-          formattedData
-        )
+          formattedData,
+        ),
       );
   } catch (error) {
     console.error(error);
@@ -295,7 +295,7 @@ exports.getStatistik = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
       );
   } catch (error) {
     return response
@@ -315,7 +315,7 @@ exports.getTierData = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
       );
   } catch (error) {
     return response

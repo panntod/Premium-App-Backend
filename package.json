@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon src/server.js",
+    "format": "prettier --write \"src/**/*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -26,5 +27,8 @@
     "sequelize": "^6.37.1",
     "uuid": "^9.0.1",
     "validatorjs": "^3.22.1"
+  },
+  "devDependencies": {
+    "prettier": "3.2.5"
   }
 }

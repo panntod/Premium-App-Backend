@@ -117,8 +117,8 @@ exports.getAllTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData
-        )
+          formattedData,
+        ),
       );
   } catch (error) {
     console.error(error);
@@ -154,7 +154,7 @@ exports.getTransaksiById = async (request, response) => {
       return response
         .status(404)
         .send(
-          ResponseData(false, "Gagal mendapatkan data transaksi", null, null)
+          ResponseData(false, "Gagal mendapatkan data transaksi", null, null),
         );
     }
 
@@ -184,8 +184,8 @@ exports.getTransaksiById = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData
-        )
+          formattedData,
+        ),
       );
   } catch (error) {
     console.error(error);
@@ -251,8 +251,8 @@ exports.filterTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData
-        )
+          formattedData,
+        ),
       );
   } catch (error) {
     console.error(error);
@@ -302,11 +302,11 @@ exports.updateStatusTransaksi = async (request, response) => {
 
     await userModel.update(
       { saldo: sisaSaldo },
-      { where: { userID: existingUser.userID } }
+      { where: { userID: existingUser.userID } },
     );
     await transaksiModel.update(
       { status: "lunas" },
-      { where: { transaksiID: existingTransaksi.transaksiID } }
+      { where: { transaksiID: existingTransaksi.transaksiID } },
     );
 
     const responseData = {
@@ -325,8 +325,8 @@ exports.updateStatusTransaksi = async (request, response) => {
           true,
           "Sukses mengupdate status data transaksi",
           null,
-          responseData
-        )
+          responseData,
+        ),
       );
   } catch (error) {
     console.error(error);
