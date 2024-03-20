@@ -36,8 +36,8 @@ exports.getAllApp = async (request, response) => {
           true,
           "Sukses mengambil seluruh aplikasi",
           null,
-          formattedData,
-        ),
+          formattedData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -261,15 +261,16 @@ exports.deleteAplikasi = async (request, response) => {
     const oldImage = dataApp.image;
     const pathImage = path.join(__dirname, `../images`, oldImage);
 
+    await aplikasiModel.destroy({ where: { aplikasiID: appID } });
+
     try {
-      await fs.access(pathImage); // Menggunakan fs.access untuk memeriksa keberadaan file
+      await fs.access(pathImage);
       await fs.unlink(pathImage);
       console.log(`File ${pathImage} dihapus.`);
     } catch (error) {
       console.error(`Gagal menghapus file ${pathImage}.`, error);
     }
 
-    await aplikasiModel.destroy({ where: { aplikasiID: appID } });
     return response
       .status(201)
       .send(ResponseData(true, "Sukses delete data", null, null));
@@ -295,7 +296,7 @@ exports.getStatistik = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
       );
   } catch (error) {
     return response
@@ -315,7 +316,7 @@ exports.getTierData = async (request, response) => {
     response
       .status(200)
       .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData),
+        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
       );
   } catch (error) {
     return response
