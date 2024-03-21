@@ -324,3 +324,41 @@ exports.getTierData = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
+
+exports.findAppByTier = async (request, response) => {
+  try {
+    let paramsID = request.params.tierID;
+    let dataAplikasi = await aplikasiModel.findOne({
+      where: { tierID: paramsID },
+      include: {
+        model: tierModel,
+        as: "tierAplikasi",
+      },
+    });
+
+    if (!dataAplikasi) {
+      return response
+        .status(404)
+        .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
+    }
+
+    const formattedData = {
+      id: dataAplikasi.aplikasiID,
+      nama: dataAplikasi.nama,
+      image: dataAplikasi.image,
+      deskripsi: dataAplikasi.deskripsi,
+      tierID: dataAplikasi.tierAplikasi.tierID,
+      tier: dataAplikasi.tierAplikasi.nama,
+      harga: dataAplikasi.tierAplikasi.harga,
+    };
+
+    return response
+      .status(200)
+      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
