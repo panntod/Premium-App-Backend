@@ -31,7 +31,6 @@ exports.findTier = async (request, response) => {
     const tiers = await tierModel.findAll({
       where: {
         [Op.or]: [
-          { tierID: { [Op.substring]: keyword } },
           { nama: { [Op.substring]: keyword } },
           { harga: { [Op.substring]: keyword } },
         ],
