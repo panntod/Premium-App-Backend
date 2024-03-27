@@ -6,10 +6,6 @@ module.exports = (sequelize, DataTypes) => {
   class aplikasi extends Model {
     static associate(models) {
       // define association here
-      this.belongsTo(models.tier, {
-        foreignKey: "tierID",
-        as: "tierAplikasi",
-      });
       this.hasMany(models.detail_transaksi, {
         foreignKey: "aplikasiID",
         as: "detailTransaksiAplikasi",
@@ -28,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       nama: DataTypes.STRING,
-      tierID: DataTypes.BIGINT,
+      harga: DataTypes.BIGINT,
       image: DataTypes.STRING,
       deskripsi: DataTypes.STRING,
     },

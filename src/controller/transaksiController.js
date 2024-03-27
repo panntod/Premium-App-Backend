@@ -4,7 +4,6 @@ const {
   detail_transaksi: detailTransaksiModel,
   user: userModel,
   aplikasi: aplikasiModel,
-  tier: tierModel,
 } = require("../db/models/index");
 const { Op } = require("sequelize");
 
@@ -41,20 +40,15 @@ exports.addTransaksi = async (request, response) => {
 
     const aplikasiData = await aplikasiModel.findOne({
       where: { aplikasiID: aplikasiID },
-      include: {
-        model: tierModel,
-        as: "tierAplikasi",
-      },
     });
 
     const newDetailTransaksi = {
       transaksiID: transaksiNew?.transaksiID,
       aplikasiID: aplikasiData?.aplikasiID,
-      tierID: aplikasiData?.tierAplikasi.tierID,
-      harga: aplikasiData ? aplikasiData.tierAplikasi.harga : 0,
+      harga: aplikasiData?aplikasiData.harga:0,
       durasi: request.body.durasi,
       total_harga:
-        (aplikasiData ? aplikasiData.tierAplikasi.harga : 0) *
+        (aplikasiData ? aplikasiData.harga : 0) *
         request.body.durasi,
     };
 
@@ -91,25 +85,6 @@ exports.getAllTransaksi = async (request, response) => {
       order: [["createdAt", "DESC"]],
     });
 
-    const formattedData = dataTransaksi.map((transaksi) => {
-      const firstDetail = transaksi.detailTransaksi[0];
-
-      return {
-        transaksiID: transaksi.transaksiID,
-        detailTransaksiID: firstDetail ? firstDetail.detail_transaksiID : null,
-        status: transaksi.status,
-        namaUser: transaksi.userTransaksi.nama,
-        username: transaksi.userTransaksi.username,
-        namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        durasi: firstDetail ? firstDetail.durasi : null,
-        harga: firstDetail ? firstDetail.harga : null,
-        totalHarga: firstDetail ? firstDetail.total_harga : null,
-        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
-        image: transaksi.aplikasiTransaksi.image,
-        tgl: transaksi.tgl,
-      };
-    });
-
     return response
       .status(200)
       .send(
@@ -117,7 +92,7 @@ exports.getAllTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData,
+          dataTransaksi,
         ),
       );
   } catch (error) {
@@ -158,25 +133,6 @@ exports.getTransaksiById = async (request, response) => {
         );
     }
 
-    const formattedData = dataTransaksi.map((transaksi) => {
-      const firstDetail = transaksi.detailTransaksi[0];
-
-      return {
-        transaksiID: transaksi.transaksiID,
-        detailTransaksiID: firstDetail ? firstDetail.detail_transaksiID : null,
-        status: transaksi.status,
-        namaUser: transaksi.userTransaksi.nama,
-        username: transaksi.userTransaksi.username,
-        namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        durasi: firstDetail ? firstDetail.durasi : null,
-        harga: firstDetail ? firstDetail.harga : null,
-        totalHarga: firstDetail ? firstDetail.total_harga : null,
-        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
-        image: transaksi.aplikasiTransaksi.image,
-        tgl: transaksi.tgl,
-      };
-    });
-
     return response
       .status(200)
       .send(
@@ -184,7 +140,7 @@ exports.getTransaksiById = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData,
+          dataTransaksi,
         ),
       );
   } catch (error) {

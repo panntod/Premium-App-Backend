@@ -1,8 +1,8 @@
 const {
   user: userModel,
   aplikasi: aplikasiModel,
-  tier: tierModel,
   transaksi: transaksiModel,
+  detail_transaksi: detailTransaksiModel,
 } = require("../db/models/index");
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
@@ -13,10 +13,6 @@ const upload = require("./uploadImage").single(`image`);
 exports.getAllApp = async (request, response) => {
   try {
     const dataApp = await aplikasiModel.findAll({
-      include: {
-        model: tierModel,
-        as: "tierAplikasi",
-      },
     });
 
     const formattedData = dataApp.map((app) => ({
@@ -24,9 +20,7 @@ exports.getAllApp = async (request, response) => {
       nama: app.nama,
       image: app.image,
       deskripsi: app.deskripsi,
-      tierID: app.tierAplikasi.tierID,
-      tier: app.tierAplikasi.nama,
-      harga: app.tierAplikasi.harga,
+      harga: app.harga,
     }));
 
     return response
@@ -55,11 +49,8 @@ exports.findApp = async (request, response) => {
         [Op.or]: [
           { aplikasiID: { [Op.substring]: keyword } },
           { nama: { [Op.substring]: keyword } },
+          {harga:{[Op.substring]: keyword}}
         ],
-      },
-      include: {
-        model: tierModel,
-        as: "tierAplikasi",
       },
     });
 
@@ -74,9 +65,7 @@ exports.findApp = async (request, response) => {
       nama: app.nama,
       image: app.image,
       deskripsi: app.deskripsi,
-      tierID: app.tierAplikasi.tierID,
-      tier: app.tierAplikasi.nama,
-      harga: app.tierAplikasi.harga,
+      harga: app.harga,
     }));
 
     return response
@@ -95,10 +84,6 @@ exports.findAppByID = async (request, response) => {
     let paramsID = request.params.aplikasiID;
     let dataAplikasi = await aplikasiModel.findOne({
       where: { aplikasiID: paramsID },
-      include: {
-        model: tierModel,
-        as: "tierAplikasi",
-      },
     });
 
     if (!dataAplikasi) {
@@ -112,9 +97,7 @@ exports.findAppByID = async (request, response) => {
       nama: dataAplikasi.nama,
       image: dataAplikasi.image,
       deskripsi: dataAplikasi.deskripsi,
-      tierID: dataAplikasi.tierAplikasi.tierID,
-      tier: dataAplikasi.tierAplikasi.nama,
-      harga: dataAplikasi.tierAplikasi.harga,
+      harga: dataAplikasi.harga,
     };
 
     return response
@@ -146,20 +129,10 @@ exports.addAplikasi = async (request, response) => {
 
       let newApp = {
         nama: request.body.nama,
-        tierID: request.body.tierID,
+        harga: request.body.harga,
         image: request.file.filename,
         deskripsi: request.body.deskripsi,
       };
-
-      const tierAplikasi = await tierModel.findOne({
-        where: { tierID: newApp.tierID },
-      });
-
-      if (!tierAplikasi) {
-        return response
-          .status(404)
-          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
-      }
 
       await aplikasiModel.create(newApp);
 
@@ -187,9 +160,13 @@ exports.updateAplikasi = async (request, response) => {
       const aplikasiID = request.params.id;
       const newApp = {
         nama: request.body.nama,
-        tierID: request.body.tierID,
+        harga: request.body.harga,
         deskripsi: request.body.deskripsi,
       };
+      
+      const existHarga = await aplikasiModel.findOne({
+        where: { harga: aplikasiID },
+      });
 
       const selectedApp = await aplikasiModel.findOne({
         where: { aplikasiID: aplikasiID },
@@ -215,25 +192,27 @@ exports.updateAplikasi = async (request, response) => {
           newApp.image = request.file.filename;
         }
       }
-
-      if (!newApp.tierID) {
-        newApp.tierID = selectedApp.tierID;
-      }
-
-      const tierAplikasi = await tierModel.findOne({
-        where: { tierID: newApp.tierID },
+      await aplikasiModel.update(newApp, { where: { aplikasiID: aplikasiID } });
+      const existingDetailTransaksi = await detailTransaksiModel.findAll({
+        where: { harga : existHarga},
+        include: {
+          model: transaksiModel,
+          as: "detailTransaksi",
+        },
       });
-
-      if (!tierAplikasi) {
-        return response
-          .status(404)
-          .send(ResponseData(false, "Tier tidak ditemukan", null, null));
+      
+      for (let i = 0; i < existingDetailTransaksi.length; i++) {
+        const status = existingDetailTransaksi[i].detailTransaksi.status;
+        const existingDetail = existingDetailTransaksi[i];
+        const updatedTotalHarga = existingDetail.durasi * newApp.harga;
+  
+        if (status === "draft") {
+          await detailTransaksiModel.update(
+            { harga: newApp.harga, total_harga: updatedTotalHarga },
+            { where: { detail_transaksiID: existingDetail.detail_transaksiID } },
+          );
+        }
       }
-
-      await aplikasiModel.update(newApp, {
-        where: { aplikasiID: aplikasiID },
-      });
-
       return response
         .status(201)
         .send(ResponseData(true, "Sukses membuat data aplikasi", null, newApp));
@@ -305,60 +284,3 @@ exports.getStatistik = async (request, response) => {
   }
 };
 
-exports.getTierData = async (request, response) => {
-  try {
-    const dataTier = await tierModel.findAll();
-    const responseData = dataTier.map((data) => ({
-      id: data.tierID,
-      nama: data.nama,
-    }));
-
-    response
-      .status(200)
-      .send(
-        ResponseData(true, "Sukses Mendapatkan Statistik", null, responseData)
-      );
-  } catch (error) {
-    return response
-      .status(500)
-      .send(ResponseData(false, error.message, error, null));
-  }
-};
-
-exports.findAppByTier = async (request, response) => {
-  try {
-    let paramsID = request.params.tierID;
-    let dataAplikasi = await aplikasiModel.findOne({
-      where: { tierID: paramsID },
-      include: {
-        model: tierModel,
-        as: "tierAplikasi",
-      },
-    });
-
-    if (!dataAplikasi) {
-      return response
-        .status(404)
-        .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
-    }
-
-    const formattedData = {
-      id: dataAplikasi.aplikasiID,
-      nama: dataAplikasi.nama,
-      image: dataAplikasi.image,
-      deskripsi: dataAplikasi.deskripsi,
-      tierID: dataAplikasi.tierAplikasi.tierID,
-      tier: dataAplikasi.tierAplikasi.nama,
-      harga: dataAplikasi.tierAplikasi.harga,
-    };
-
-    return response
-      .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
-  } catch (error) {
-    console.log(error);
-    return response
-      .status(500)
-      .send(ResponseData(false, error.message, error, null));
-  }
-};

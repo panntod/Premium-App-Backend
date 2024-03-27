@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       transaksiID: DataTypes.INTEGER,
       aplikasiID: DataTypes.INTEGER,
-      tierID: DataTypes.INTEGER,
       harga: DataTypes.BIGINT,
       durasi: DataTypes.BIGINT,
       total_harga: DataTypes.BIGINT,
