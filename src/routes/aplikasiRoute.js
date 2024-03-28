@@ -6,7 +6,6 @@ const { adminOnly, authorization } = require("../middlewares/authValidation");
 
 router.get("/", aplikasiController.getAllApp);
 router.get("/statistik", aplikasiController.getStatistik);
-router.get("/tier", aplikasiController.getTierData);
 router.post("/find", aplikasiController.findApp);
 router.post("/findByID/:aplikasiID", aplikasiController.findAppByID);
 router.post("/", authorization, adminOnly, aplikasiController.addAplikasi);

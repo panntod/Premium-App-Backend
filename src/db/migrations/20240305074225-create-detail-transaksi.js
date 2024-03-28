@@ -26,14 +26,6 @@ module.exports = {
           key: "aplikasiID",
         },
       },
-      tierID: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: "tiers",
-          key: "tierID",
-        },
-      },
       harga: {
         type: Sequelize.BIGINT,
       },

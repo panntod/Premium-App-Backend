@@ -1,6 +1,6 @@
 const Validator = require("validatorjs");
 const { ResponseData } = require("../helpers/ResponseHelper");
-const { user: userModel, tier: tierModel } = require("../db/models/index");
+const { user: userModel,} = require("../db/models/index");
 
 const registerValidationRules = {
   nama: "required|string|max:50",
@@ -111,53 +111,6 @@ exports.updateUserValidation = async (request, response, next) => {
   }
 };
 
-const tierValidationRules = {
-  harga: "required|numeric",
-  nama: "required|string|max:50",
-};
-
-exports.tierValidation = async (request, response, next) => {
-  try {
-    const tierData = {
-      harga: request.body.harga,
-      nama: request.body.nama,
-    };
-
-    const validate = new Validator(tierData, tierValidationRules);
-
-    if (validate.fails()) {
-      const validationErrors = Object.values(validate.errors.errors)
-        .flat()
-        .join(", ")
-        .split(", ");
-
-      return response
-        .status(400)
-        .send(ResponseData(false, "Bad Request", validationErrors, null));
-    }
-
-    const existingName = await tierModel.findOne({
-      where: { nama: tierData.nama },
-    });
-
-    if (existingName) {
-      return response
-        .status(400)
-        .send(
-          ResponseData(false, "Bad Request", ["Nama Sudah Digunakan"], null),
-        );
-    }
-
-    next();
-  } catch (error) {
-    console.error(error);
-    return response
-      .status(500)
-      .send(
-        ResponseData(false, "Internal Server Error", [error.message], null),
-      );
-  }
-};
 
 const transactionValidationRules = {
   userID: "required|string",
