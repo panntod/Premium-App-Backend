@@ -1,9 +1,9 @@
 const { user: userModel } = require(`../db/models/index`);
-const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const { PasswordHashing } = require("../helpers/PasswordHelper");
+const { Op } = require(`sequelize`);
 
-exports.getAllUser = async (request, response) => {
+exports.getAllUser = async (_, response) => {
   try {
     let users = await userModel.findAll({
       order: [["createdAt", "DESC"]],

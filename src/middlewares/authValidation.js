@@ -6,16 +6,16 @@ const {
   ResponseData,
 } = require("../helpers/ResponseHelper");
 
-exports.authentication = async (req, res) => {
+exports.authentication = async (request, response) => {
   try {
-    const { username, password } = req.body;
+    const { username, password } = request.body;
 
     const findUser = await userModel.findOne({
       where: { username: username },
     });
 
     if (!findUser) {
-      return res
+      return response
         .status(404)
         .send(ResponseData(false, "Username Tidak Ditemukan", null, null));
     }
@@ -23,7 +23,7 @@ exports.authentication = async (req, res) => {
     const matched = await PasswordCompare(password, findUser.password);
 
     if (!matched) {
-      return res
+      return response
         .status(400)
         .send(ResponseData(false, "Password Salah", null, null));
     }
@@ -45,23 +45,23 @@ exports.authentication = async (req, res) => {
       token: token,
     };
 
-    return res
+    return response
       .status(200)
       .send(ResponseData(true, "Login Berhasil", null, responseData));
   } catch (error) {
     console.log(error);
-    return res
+    return response
       .status(500)
       .send(ResponseData(false, error.message, error, null));
   }
 };
 
-exports.authorization = async (req, res, next) => {
+exports.authorization = async (request, response, next) => {
   try {
-    let authToken = req.headers.authorization;
+    let authToken = request.headers.authorization;
 
     if (!authToken) {
-      return res
+      return response
         .status(404)
         .send(ResponseData(false, "Token Tidak Ditemukan", null, null));
     }
@@ -70,33 +70,33 @@ exports.authorization = async (req, res, next) => {
 
     const decodedToken = ExtractToken(tokenKey);
     if (!decodedToken) {
-      return res
+      return response
         .status(401)
         .send(ResponseData(false, "Unauthorized User", null, null));
     }
 
     if (decodedToken.error) {
-      return res
+      return response
         .status(401)
         .send(ResponseData(false, decodedToken.error, null, null));
     }
 
-    res.locals.role = decodedToken.role;
+    response.locals.role = decodedToken.role;
     next();
   } catch (error) {
     console.log(error);
-    return res
+    return response
       .status(500)
       .send(ResponseData(false, error.message, error, null));
   }
 };
 
-exports.adminOnly = (req, res, next) => {
+exports.adminOnly = (_, response, next) => {
   try {
-    const userRole = res.locals.role;
+    const userRole = response.locals.role;
 
     if (userRole !== "admin") {
-      return res
+      return response
         .status(403)
         .send(ResponseData(false, "Forbidden Access", null, null));
     }

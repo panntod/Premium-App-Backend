@@ -6,32 +6,18 @@ const {
 } = require("../db/models/index");
 const { Op } = require(`sequelize`);
 const { ResponseData } = require("../helpers/ResponseHelper");
-const path = require("path");
+const uploadImage = require("./uploadImage").single(`image`);
 const fs = require("fs").promises;
-const upload = require("./uploadImage").single(`image`);
+const path = require("path");
 
-exports.getAllApp = async (request, response) => {
+exports.getAllApp = async (_, response) => {
   try {
-    const dataApp = await aplikasiModel.findAll({
-    });
-
-    const formattedData = dataApp.map((app) => ({
-      id: app.aplikasiID,
-      nama: app.nama,
-      image: app.image,
-      deskripsi: app.deskripsi,
-      harga: app.harga,
-    }));
+    const dataApp = await aplikasiModel.findAll();
 
     return response
       .status(200)
       .send(
-        ResponseData(
-          true,
-          "Sukses mengambil seluruh aplikasi",
-          null,
-          formattedData
-        )
+        ResponseData(true, "Sukses mengambil seluruh aplikasi", null, dataApp)
       );
   } catch (error) {
     console.error(error);
@@ -49,7 +35,7 @@ exports.findApp = async (request, response) => {
         [Op.or]: [
           { aplikasiID: { [Op.substring]: keyword } },
           { nama: { [Op.substring]: keyword } },
-          {harga:{[Op.substring]: keyword}}
+          { harga: { [Op.substring]: keyword } },
         ],
       },
     });
@@ -60,17 +46,9 @@ exports.findApp = async (request, response) => {
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
 
-    const formattedData = dataAplikasi.map((app) => ({
-      id: app.aplikasiID,
-      nama: app.nama,
-      image: app.image,
-      deskripsi: app.deskripsi,
-      harga: app.harga,
-    }));
-
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
+      .send(ResponseData(true, "Sukses mengambil app", null, dataAplikasi));
   } catch (error) {
     console.log(error);
     return response
@@ -92,17 +70,9 @@ exports.findAppByID = async (request, response) => {
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
     }
 
-    const formattedData = {
-      id: dataAplikasi.aplikasiID,
-      nama: dataAplikasi.nama,
-      image: dataAplikasi.image,
-      deskripsi: dataAplikasi.deskripsi,
-      harga: dataAplikasi.harga,
-    };
-
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, formattedData));
+      .send(ResponseData(true, "Sukses mengambil app", null, dataAplikasi));
   } catch (error) {
     console.log(error);
     return response
@@ -113,13 +83,11 @@ exports.findAppByID = async (request, response) => {
 
 exports.addAplikasi = async (request, response) => {
   try {
-    upload(request, response, async (error) => {
-      if (error) {
-        console.log(error);
+    uploadImage(request, response, async (error) => {
+      if (error)
         return response
           .status(500)
           .send(ResponseData(false, error.message, error, null));
-      }
 
       if (!request.file) {
         return response
@@ -150,33 +118,27 @@ exports.addAplikasi = async (request, response) => {
 
 exports.updateAplikasi = async (request, response) => {
   try {
-    upload(request, response, async (error) => {
-      if (error) {
+    uploadImage(request, response, async (error) => {
+      if (error)
         return response
           .status(500)
           .send(ResponseData(false, error.message, error, null));
-      }
 
-      const aplikasiID = request.params.id;
+      const appID = request.params.id;
       const newApp = {
         nama: request.body.nama,
         harga: request.body.harga,
         deskripsi: request.body.deskripsi,
       };
-      
-      const existHarga = await aplikasiModel.findOne({
-        where: { harga: aplikasiID },
-      });
 
       const selectedApp = await aplikasiModel.findOne({
-        where: { aplikasiID: aplikasiID },
+        where: { aplikasiID: appID },
       });
 
-      if (!selectedApp) {
+      if (!selectedApp)
         return response
           .status(404)
           .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
-      }
 
       if (request.file) {
         if (selectedApp) {
@@ -186,36 +148,38 @@ exports.updateAplikasi = async (request, response) => {
           try {
             await fs.unlink(pathImage);
           } catch (error) {
-            console.error("Error deleting old image:", error);
+            console.error("Gagal menghapus image:", error);
           }
 
           newApp.image = request.file.filename;
         }
       }
-      await aplikasiModel.update(newApp, { where: { aplikasiID: aplikasiID } });
+
+      await aplikasiModel.update(newApp, { where: { aplikasiID: appID } });
+
       const existingDetailTransaksi = await detailTransaksiModel.findAll({
-        where: { harga : existHarga},
+        where: { aplikasiID: appID },
         include: {
           model: transaksiModel,
           as: "detailTransaksi",
         },
       });
-      
-      for (let i = 0; i < existingDetailTransaksi.length; i++) {
-        const status = existingDetailTransaksi[i].detailTransaksi.status;
-        const existingDetail = existingDetailTransaksi[i];
+
+      existingDetailTransaksi.forEach(async (existingDetail) => {
+        const status = existingDetail.detailTransaksi.status;
         const updatedTotalHarga = existingDetail.durasi * newApp.harga;
-  
+
         if (status === "draft") {
           await detailTransaksiModel.update(
             { harga: newApp.harga, total_harga: updatedTotalHarga },
-            { where: { detail_transaksiID: existingDetail.detail_transaksiID } },
+            { where: { detail_transaksiID: existingDetail.detail_transaksiID } }
           );
         }
-      }
+      });
+
       return response
         .status(201)
-        .send(ResponseData(true, "Sukses membuat data aplikasi", null, newApp));
+        .send(ResponseData(true, "Sukses memperbarui data aplikasi", null, newApp));
     });
   } catch (error) {
     return response
@@ -260,7 +224,7 @@ exports.deleteAplikasi = async (request, response) => {
   }
 };
 
-exports.getStatistik = async (request, response) => {
+exports.getStatistik = async (_, response) => {
   try {
     const dataUser = await userModel.findAll();
     const dataApp = await aplikasiModel.findAll();
@@ -283,4 +247,3 @@ exports.getStatistik = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
-

@@ -1,10 +1,10 @@
-const { ResponseData } = require("../helpers/ResponseHelper");
 const {
   transaksi: transaksiModel,
   detail_transaksi: detailTransaksiModel,
   user: userModel,
   aplikasi: aplikasiModel,
 } = require("../db/models/index");
+const { ResponseData } = require("../helpers/ResponseHelper");
 const { Op } = require("sequelize");
 
 exports.addTransaksi = async (request, response) => {
@@ -45,11 +45,10 @@ exports.addTransaksi = async (request, response) => {
     const newDetailTransaksi = {
       transaksiID: transaksiNew?.transaksiID,
       aplikasiID: aplikasiData?.aplikasiID,
-      harga: aplikasiData?aplikasiData.harga:0,
+      harga: aplikasiData ? aplikasiData.harga : 0,
       durasi: request.body.durasi,
       total_harga:
-        (aplikasiData ? aplikasiData.harga : 0) *
-        request.body.durasi,
+        (aplikasiData ? aplikasiData.harga : 0) * request.body.durasi,
     };
 
     const result = await detailTransaksiModel.create(newDetailTransaksi);
@@ -65,7 +64,7 @@ exports.addTransaksi = async (request, response) => {
   }
 };
 
-exports.getAllTransaksi = async (request, response) => {
+exports.getAllTransaksi = async (_, response) => {
   try {
     const dataTransaksi = await transaksiModel.findAll({
       include: [
@@ -76,10 +75,6 @@ exports.getAllTransaksi = async (request, response) => {
         {
           model: detailTransaksiModel,
           as: "detailTransaksi",
-        },
-        {
-          model: aplikasiModel,
-          as: "aplikasiTransaksi",
         },
       ],
       order: [["createdAt", "DESC"]],
@@ -92,8 +87,8 @@ exports.getAllTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          dataTransaksi,
-        ),
+          dataTransaksi
+        )
       );
   } catch (error) {
     console.error(error);
@@ -129,7 +124,7 @@ exports.getTransaksiById = async (request, response) => {
       return response
         .status(404)
         .send(
-          ResponseData(false, "Gagal mendapatkan data transaksi", null, null),
+          ResponseData(false, "Gagal mendapatkan data transaksi", null, null)
         );
     }
 
@@ -140,8 +135,8 @@ exports.getTransaksiById = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          dataTransaksi,
-        ),
+          dataTransaksi
+        )
       );
   } catch (error) {
     console.error(error);
@@ -181,25 +176,6 @@ exports.filterTransaksi = async (request, response) => {
       order: [["createdAt", "DESC"]],
     });
 
-    const formattedData = dataTransaksi.map((transaksi) => {
-      const firstDetail = transaksi.detailTransaksi[0];
-
-      return {
-        transaksiID: transaksi.transaksiID,
-        detailTransaksiID: firstDetail ? firstDetail.detail_transaksiID : null,
-        status: transaksi.status,
-        namaUser: transaksi.userTransaksi.nama,
-        username: transaksi.userTransaksi.username,
-        namaAplikasi: transaksi.aplikasiTransaksi.nama,
-        durasi: firstDetail ? firstDetail.durasi : null,
-        harga: firstDetail ? firstDetail.harga : null,
-        totalHarga: firstDetail ? firstDetail.total_harga : null,
-        deskripsi: transaksi.aplikasiTransaksi.deskripsi,
-        image: transaksi.aplikasiTransaksi.image,
-        tgl: transaksi.tgl,
-      };
-    });
-
     return response
       .status(200)
       .send(
@@ -207,8 +183,8 @@ exports.filterTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          formattedData,
-        ),
+          dataTransaksi
+        )
       );
   } catch (error) {
     console.error(error);
@@ -248,8 +224,9 @@ exports.updateStatusTransaksi = async (request, response) => {
         .send(ResponseData(false, "Transaksi sudah dibayar", null, null));
     }
 
-    const total = existingTransaksi.detailTransaksi[0].total_harga;
+    const total = existingTransaksi.detailTransaksi.total_harga;
     const sisaSaldo = existingUser.saldo - total;
+
     if (sisaSaldo < 0) {
       return response
         .status(402)
@@ -258,17 +235,17 @@ exports.updateStatusTransaksi = async (request, response) => {
 
     await userModel.update(
       { saldo: sisaSaldo },
-      { where: { userID: existingUser.userID } },
+      { where: { userID: existingUser.userID } }
     );
+
     await transaksiModel.update(
       { status: "lunas" },
-      { where: { transaksiID: existingTransaksi.transaksiID } },
+      { where: { transaksiID: existingTransaksi.transaksiID } }
     );
 
     const responseData = {
       transaksiID: existingTransaksi.transaksiID,
-      detailTransaksiID:
-        existingTransaksi.detailTransaksi[0].detail_transaksiID,
+      detailTransaksiID: existingTransaksi.detailTransaksi.detail_transaksiID,
       status: "lunas",
       username: existingUser.username,
       sisaSaldo: sisaSaldo,
@@ -281,8 +258,8 @@ exports.updateStatusTransaksi = async (request, response) => {
           true,
           "Sukses mengupdate status data transaksi",
           null,
-          responseData,
-        ),
+          responseData
+        )
       );
   } catch (error) {
     console.error(error);
@@ -303,9 +280,11 @@ exports.deleteTransaksi = async (request, response) => {
         .status(404)
         .send(ResponseData(false, "Transaksi tidak ditemukan", null, null));
     }
+
     await detailTransaksiModel.destroy({
       where: { transaksiID: transaksiID },
     });
+    
     await transaksiModel.destroy({
       where: { transaksiID: transaksiID },
     });
