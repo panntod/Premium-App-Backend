@@ -6,7 +6,6 @@ const {
 } = require("../db/models/index");
 const { ResponseData } = require("../helpers/ResponseHelper");
 const { Op } = require("sequelize");
-
 exports.addTransaksi = async (request, response) => {
   try {
     const existingAplikasi = await aplikasiModel.findOne({
@@ -51,6 +50,8 @@ exports.addTransaksi = async (request, response) => {
         (aplikasiData ? aplikasiData.harga : 0) * request.body.durasi,
     };
 
+    console.log(newDetailTransaksi);
+
     const result = await detailTransaksiModel.create(newDetailTransaksi);
 
     return response
@@ -63,7 +64,6 @@ exports.addTransaksi = async (request, response) => {
       .send(ResponseData(false, error.message, error, null));
   }
 };
-
 exports.getAllTransaksi = async (_, response) => {
   try {
     const dataTransaksi = await transaksiModel.findAll({
@@ -76,9 +76,29 @@ exports.getAllTransaksi = async (_, response) => {
           model: detailTransaksiModel,
           as: "detailTransaksi",
         },
+        {
+          model: aplikasiModel,
+          as: "aplikasiTransaksi",
+        },
       ],
       order: [["createdAt", "DESC"]],
     });
+
+    const formatData = dataTransaksi.map((data) => ({
+      transaksiID: data.transaksiID,
+      tgl: data.tgl,
+      status: data.status,
+      userID: data.userTransaksi.userID,
+      username: data.userTransaksi.username,
+      detailTransaksiID: data.detailTransaksi.detail_transaksiID,
+      harga: data.detailTransaksi.harga,
+      durasi: data.detailTransaksi.durasi,
+      totalHarga: data.detailTransaksi.total_harga,
+      aplikasiID: data.aplikasiTransaksi.aplikasiID,
+      namaApp: data.aplikasiTransaksi.nama,
+      hargaApp: data.aplikasiTransaksi.harga,
+      deskripsiApp: data.aplikasiTransaksi.deskripsi,
+    }));
 
     return response
       .status(200)
@@ -87,7 +107,7 @@ exports.getAllTransaksi = async (_, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          dataTransaksi
+          formatData
         )
       );
   } catch (error) {
@@ -128,6 +148,22 @@ exports.getTransaksiById = async (request, response) => {
         );
     }
 
+    const formatData = dataTransaksi.map((data) => ({
+      transaksiID: data.transaksiID,
+      tgl: data.tgl,
+      status: data.status,
+      userID: data.userTransaksi.userID,
+      username: data.userTransaksi.username,
+      detailTransaksiID: data.detailTransaksi.detail_transaksiID,
+      harga: data.detailTransaksi.harga,
+      durasi: data.detailTransaksi.durasi,
+      totalHarga: data.detailTransaksi.total_harga,
+      aplikasiID: data.aplikasiTransaksi.aplikasiID,
+      namaApp: data.aplikasiTransaksi.nama,
+      hargaApp: data.aplikasiTransaksi.harga,
+      deskripsiApp: data.aplikasiTransaksi.deskripsi,
+    }));
+
     return response
       .status(200)
       .send(
@@ -135,7 +171,7 @@ exports.getTransaksiById = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          dataTransaksi
+          formatData
         )
       );
   } catch (error) {
@@ -176,6 +212,22 @@ exports.filterTransaksi = async (request, response) => {
       order: [["createdAt", "DESC"]],
     });
 
+    const formatData = dataTransaksi.map((data) => ({
+      transaksiID: data.transaksiID,
+      tgl: data.tgl,
+      status: data.status,
+      userID: data.userTransaksi.userID,
+      username: data.userTransaksi.username,
+      detailTransaksiID: data.detailTransaksi.detail_transaksiID,
+      harga: data.detailTransaksi.harga,
+      durasi: data.detailTransaksi.durasi,
+      totalHarga: data.detailTransaksi.total_harga,
+      aplikasiID: data.aplikasiTransaksi.aplikasiID,
+      namaApp: data.aplikasiTransaksi.nama,
+      hargaApp: data.aplikasiTransaksi.harga,
+      deskripsiApp: data.aplikasiTransaksi.deskripsi,
+    }));
+
     return response
       .status(200)
       .send(
@@ -183,7 +235,7 @@ exports.filterTransaksi = async (request, response) => {
           true,
           "Sukses mendapatkan semua data transaksi",
           null,
-          dataTransaksi
+          formatData
         )
       );
   } catch (error) {
@@ -284,7 +336,7 @@ exports.deleteTransaksi = async (request, response) => {
     await detailTransaksiModel.destroy({
       where: { transaksiID: transaksiID },
     });
-    
+
     await transaksiModel.destroy({
       where: { transaksiID: transaksiID },
     });
