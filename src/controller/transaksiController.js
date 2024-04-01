@@ -6,6 +6,25 @@ const {
 } = require("../db/models/index");
 const { ResponseData } = require("../helpers/ResponseHelper");
 const { Op } = require("sequelize");
+
+const formatedData = (paramsData) => {
+  return (data = paramsData.map((data) => ({
+    transaksiID: data.transaksiID,
+    tgl: data.tgl,
+    status: data.status,
+    userID: data.userTransaksi.userID,
+    username: data.userTransaksi.username,
+    detailTransaksiID: data.detailTransaksi.detail_transaksiID,
+    harga: data.detailTransaksi.harga,
+    durasi: data.detailTransaksi.durasi,
+    totalHarga: data.detailTransaksi.total_harga,
+    aplikasiID: data.aplikasiTransaksi.aplikasiID,
+    namaApp: data.aplikasiTransaksi.nama,
+    hargaApp: data.aplikasiTransaksi.harga,
+    deskripsiApp: data.aplikasiTransaksi.deskripsi,
+  })));
+}
+
 exports.addTransaksi = async (request, response) => {
   try {
     const existingAplikasi = await aplikasiModel.findOne({
@@ -50,8 +69,6 @@ exports.addTransaksi = async (request, response) => {
         (aplikasiData ? aplikasiData.harga : 0) * request.body.durasi,
     };
 
-    console.log(newDetailTransaksi);
-
     const result = await detailTransaksiModel.create(newDetailTransaksi);
 
     return response
@@ -84,21 +101,7 @@ exports.getAllTransaksi = async (_, response) => {
       order: [["createdAt", "DESC"]],
     });
 
-    const formatData = dataTransaksi.map((data) => ({
-      transaksiID: data.transaksiID,
-      tgl: data.tgl,
-      status: data.status,
-      userID: data.userTransaksi.userID,
-      username: data.userTransaksi.username,
-      detailTransaksiID: data.detailTransaksi.detail_transaksiID,
-      harga: data.detailTransaksi.harga,
-      durasi: data.detailTransaksi.durasi,
-      totalHarga: data.detailTransaksi.total_harga,
-      aplikasiID: data.aplikasiTransaksi.aplikasiID,
-      namaApp: data.aplikasiTransaksi.nama,
-      hargaApp: data.aplikasiTransaksi.harga,
-      deskripsiApp: data.aplikasiTransaksi.deskripsi,
-    }));
+    const formatData = formatedData(dataTransaksi)
 
     return response
       .status(200)
@@ -148,21 +151,7 @@ exports.getTransaksiById = async (request, response) => {
         );
     }
 
-    const formatData = dataTransaksi.map((data) => ({
-      transaksiID: data.transaksiID,
-      tgl: data.tgl,
-      status: data.status,
-      userID: data.userTransaksi.userID,
-      username: data.userTransaksi.username,
-      detailTransaksiID: data.detailTransaksi.detail_transaksiID,
-      harga: data.detailTransaksi.harga,
-      durasi: data.detailTransaksi.durasi,
-      totalHarga: data.detailTransaksi.total_harga,
-      aplikasiID: data.aplikasiTransaksi.aplikasiID,
-      namaApp: data.aplikasiTransaksi.nama,
-      hargaApp: data.aplikasiTransaksi.harga,
-      deskripsiApp: data.aplikasiTransaksi.deskripsi,
-    }));
+    const formatData = formatedData(dataTransaksi)
 
     return response
       .status(200)
@@ -212,21 +201,7 @@ exports.filterTransaksi = async (request, response) => {
       order: [["createdAt", "DESC"]],
     });
 
-    const formatData = dataTransaksi.map((data) => ({
-      transaksiID: data.transaksiID,
-      tgl: data.tgl,
-      status: data.status,
-      userID: data.userTransaksi.userID,
-      username: data.userTransaksi.username,
-      detailTransaksiID: data.detailTransaksi.detail_transaksiID,
-      harga: data.detailTransaksi.harga,
-      durasi: data.detailTransaksi.durasi,
-      totalHarga: data.detailTransaksi.total_harga,
-      aplikasiID: data.aplikasiTransaksi.aplikasiID,
-      namaApp: data.aplikasiTransaksi.nama,
-      hargaApp: data.aplikasiTransaksi.harga,
-      deskripsiApp: data.aplikasiTransaksi.deskripsi,
-    }));
+    const formatData = formatedData(dataTransaksi)
 
     return response
       .status(200)

@@ -5,7 +5,6 @@ const { adminOnly, authorization } = require("../middlewares/authValidation");
 const { transactionValidation } = require("../middlewares/validation");
 
 router.get("/", authorization, adminOnly, transaksiController.getAllTransaksi);
-
 router.get(
   "/find/:userID",
   authorization,

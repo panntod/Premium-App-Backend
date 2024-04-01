@@ -48,7 +48,7 @@ exports.findApp = async (request, response) => {
 
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, dataAplikasi));
+      .send(ResponseData(true, "Sukses mengambil data aplikasi", null, dataAplikasi));
   } catch (error) {
     console.log(error);
     return response
@@ -72,7 +72,7 @@ exports.findAppByID = async (request, response) => {
 
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil app", null, dataAplikasi));
+      .send(ResponseData(true, "Sukses mencari data aplikasi", null, dataAplikasi));
   } catch (error) {
     console.log(error);
     return response
@@ -209,14 +209,13 @@ exports.deleteAplikasi = async (request, response) => {
     try {
       await fs.access(pathImage);
       await fs.unlink(pathImage);
-      console.log(`File ${pathImage} dihapus.`);
     } catch (error) {
       console.error(`Gagal menghapus file ${pathImage}.`, error);
     }
 
     return response
       .status(201)
-      .send(ResponseData(true, "Sukses delete data", null, null));
+      .send(ResponseData(true, "Sukses menghapus data aplikasi", null, null));
   } catch (error) {
     return response
       .status(500)

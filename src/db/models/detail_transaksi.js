@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "transaksiID",
         as: "detailTransaksi",
       });
-      this.belongsTo(models.aplikasi, {
-        foreignKey: "aplikasiID",
-        as: "detailAplikasi",
-      });
     }
   }
   detail_transaksi.init(

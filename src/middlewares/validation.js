@@ -111,7 +111,6 @@ exports.updateUserValidation = async (request, response, next) => {
   }
 };
 
-
 const transactionValidationRules = {
   userID: "required|string",
   aplikasiID: "required|string",

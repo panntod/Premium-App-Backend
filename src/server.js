@@ -21,6 +21,6 @@ app.use(indexRoute);
 
 app.listen(PORT, () => {
   console.log(
-    chalk.blue("[Info]") + " Server of premium apps runs on port 8000 🚀",
+    chalk.blue("[INFO]") + " Server of premium apps runs on port 8000 🚀",
   );
 });

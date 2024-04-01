@@ -43,7 +43,7 @@ exports.findUser = async (request, response) => {
 
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil user", null, users));
+      .send(ResponseData(true, "Sukses mengambil data user", null, users));
   } catch (error) {
     console.log(error);
     return response

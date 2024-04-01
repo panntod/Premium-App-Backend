@@ -9,7 +9,6 @@ const authorization = require("../middlewares/authValidation");
 
 app.use(logMiddleware);
 app.use(express.json());
-app.use(express.static(__dirname));
 
 app.use("/user", userRoute);
 app.use("/app", appRoute);
