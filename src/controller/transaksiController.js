@@ -12,16 +12,12 @@ const formatedData = (paramsData) => {
     transaksiID: data.transaksiID,
     tgl: data.tgl,
     status: data.status,
-    userID: data.userTransaksi.userID,
     username: data.userTransaksi.username,
-    detailTransaksiID: data.detailTransaksi.detail_transaksiID,
     harga: data.detailTransaksi.harga,
     durasi: data.detailTransaksi.durasi,
     totalHarga: data.detailTransaksi.total_harga,
-    aplikasiID: data.aplikasiTransaksi.aplikasiID,
+    imageApp:  data.aplikasiTransaksi.image,
     namaApp: data.aplikasiTransaksi.nama,
-    hargaApp: data.aplikasiTransaksi.harga,
-    deskripsiApp: data.aplikasiTransaksi.deskripsi,
   })));
 }
 
