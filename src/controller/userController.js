@@ -27,7 +27,6 @@ exports.findUser = async (request, response) => {
     let users = await userModel.findAll({
       where: {
         [Op.or]: [
-          { userID: { [Op.substring]: keyword } },
           { username: { [Op.substring]: keyword } },
           { nama: { [Op.substring]: keyword } },
           { role: { [Op.substring]: keyword } },
@@ -35,7 +34,7 @@ exports.findUser = async (request, response) => {
       },
     });
 
-    if (!users.length) {
+    if (!users.length||!keyword) {
       return response
         .status(404)
         .send(ResponseData(true, "User tidak ditemukan", null, null));
