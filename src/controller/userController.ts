@@ -91,6 +91,7 @@ export const addUser = async (
       .send(ResponseData(false, error.message, error, null));
   }
 };
+
 export const updateUser = async (
   request: Request,
   response: Response
