@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 
 interface AplikasiAttributes {
   aplikasiID?: string;
-  nama: string;
-  tierID: string;
-  image: string;
-  deskripsi: string;
+  nama: string | null;
+  harga: bigint | null;
+  image: string | null;
+  deskripsi: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,7 +22,7 @@ class Aplikasi
 {
   public aplikasiID!: string;
   public nama!: string;
-  public tierID!: string;
+  public harga!: bigint;
   public image!: string;
   public deskripsi!: string;
   public readonly createdAt!: Date;
@@ -38,7 +38,7 @@ Aplikasi.init(
       defaultValue: () => uuidv4(),
     },
     nama: DataTypes.STRING,
-    tierID: DataTypes.STRING,
+    harga: DataTypes.BIGINT,
     image: DataTypes.STRING,
     deskripsi: DataTypes.TEXT,
   },

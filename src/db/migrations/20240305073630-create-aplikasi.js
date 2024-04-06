@@ -13,13 +13,8 @@ module.exports = {
       nama: {
         type: Sequelize.STRING,
       },
-      tierID: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: "tiers",
-          key: "tierID",
-        },
+      harga: {
+        type: Sequelize.BIGINT,
       },
       image: {
         type: Sequelize.TEXT,
