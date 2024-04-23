@@ -48,7 +48,9 @@ exports.findApp = async (request, response) => {
 
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mengambil data aplikasi", null, dataAplikasi));
+      .send(
+        ResponseData(true, "Sukses mengambil data aplikasi", null, dataAplikasi)
+      );
   } catch (error) {
     console.log(error);
     return response
@@ -72,7 +74,9 @@ exports.findAppByID = async (request, response) => {
 
     return response
       .status(200)
-      .send(ResponseData(true, "Sukses mencari data aplikasi", null, dataAplikasi));
+      .send(
+        ResponseData(true, "Sukses mencari data aplikasi", null, dataAplikasi)
+      );
   } catch (error) {
     console.log(error);
     return response
@@ -118,27 +122,27 @@ exports.addAplikasi = async (request, response) => {
 
 exports.updateAplikasi = async (request, response) => {
   try {
+    const appID = request.params.id;
+    const newApp = {
+      nama: request.body.nama,
+      harga: request.body.harga,
+      deskripsi: request.body.deskripsi,
+    };
+
+    const selectedApp = await aplikasiModel.findOne({
+      where: { aplikasiID: appID },
+    });
+
+    if (!selectedApp)
+      return response
+        .status(404)
+        .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
+
     uploadImage(request, response, async (error) => {
       if (error)
         return response
           .status(500)
           .send(ResponseData(false, error.message, error, null));
-
-      const appID = request.params.id;
-      const newApp = {
-        nama: request.body.nama,
-        harga: request.body.harga,
-        deskripsi: request.body.deskripsi,
-      };
-
-      const selectedApp = await aplikasiModel.findOne({
-        where: { aplikasiID: appID },
-      });
-
-      if (!selectedApp)
-        return response
-          .status(404)
-          .send(ResponseData(false, "Aplikasi tidak ditemukan", null, null));
 
       if (request.file) {
         if (selectedApp) {
@@ -179,7 +183,9 @@ exports.updateAplikasi = async (request, response) => {
 
       return response
         .status(201)
-        .send(ResponseData(true, "Sukses memperbarui data aplikasi", null, newApp));
+        .send(
+          ResponseData(true, "Sukses memperbarui data aplikasi", null, newApp)
+        );
     });
   } catch (error) {
     return response
