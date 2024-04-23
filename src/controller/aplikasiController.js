@@ -38,7 +38,7 @@ exports.findApp = async (request, response) => {
       },
     });
 
-    if (!dataAplikasi.length || !keyword) {
+    if (!dataAplikasi.length) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
