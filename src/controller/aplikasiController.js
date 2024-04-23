@@ -13,7 +13,6 @@ const path = require("path");
 exports.getAllApp = async (_, response) => {
   try {
     const dataApp = await aplikasiModel.findAll();
-
     return response
       .status(200)
       .send(
@@ -33,14 +32,13 @@ exports.findApp = async (request, response) => {
     let dataAplikasi = await aplikasiModel.findAll({
       where: {
         [Op.or]: [
-          { aplikasiID: { [Op.substring]: keyword } },
           { nama: { [Op.substring]: keyword } },
           { harga: { [Op.substring]: keyword } },
         ],
       },
     });
 
-    if (!dataAplikasi.length) {
+    if (!dataAplikasi.length || !keyword) {
       return response
         .status(404)
         .send(ResponseData(true, "Aplikasi tidak ditemukan", null, null));
@@ -105,7 +103,14 @@ exports.addAplikasi = async (request, response) => {
         image: request.file.filename,
         deskripsi: request.body.deskripsi,
       };
-
+      const existingName = await aplikasiModel.findOne({
+        where: { nama: newApp.nama},
+      });
+      if(existingName){
+        return response
+        .status(400)
+        .send(ResponseData(false, "Nama Sudah dipakai", null, null));
+      }
       await aplikasiModel.create(newApp);
 
       return response
