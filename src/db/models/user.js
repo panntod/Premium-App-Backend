@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "userID",
         as: "userTransaksi",
       });
+      this.hasMany(models.topup, {
+        foreignKey: "userID",
+        as: "userTopup",
+      });
     }
   }
 
