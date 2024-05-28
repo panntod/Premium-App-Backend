@@ -19,6 +19,12 @@ router.post(
   userController.topUpSaldo,
 );
 router.put(
+  "/topup/:topupID",
+  authorization,
+  adminOnly,
+  userController.accTopup,
+);
+router.put(
   "/:id",
   authorization,
   adminOnly,

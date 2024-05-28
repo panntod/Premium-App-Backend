@@ -1,4 +1,4 @@
-const { user: userModel } = require(`../db/models/index`);
+const { user: userModel , topup:topupModel} = require(`../db/models/index`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const { PasswordHashing } = require("../helpers/PasswordHelper");
 const { Op } = require(`sequelize`);
@@ -144,7 +144,6 @@ exports.topUpSaldo = async (request, response) => {
         .send(ResponseData(false, "User tidak ditemukan", null, null));
     }
 
-    const currentSaldo = findUser.saldo || 0;
     const additionalSaldo = parseFloat(request.body.saldo);
 
     if (isNaN(additionalSaldo) || additionalSaldo <= 0) {
@@ -153,16 +152,79 @@ exports.topUpSaldo = async (request, response) => {
         .send(ResponseData(false, "Jumlah top up tidak valid", null, null));
     }
 
-    const newSaldo = currentSaldo + additionalSaldo;
-
-    await userModel.update(
-      { saldo: newSaldo },
-      { where: { username: username } },
-    );
+    const newtopup = {
+      userID:findUser.userID,
+      saldo:additionalSaldo
+    }
+    await topupModel.create(newtopup)
 
     return response
       .status(201)
-      .send(ResponseData(true, "Sukses menambahkan saldo", null, null));
+      .send(ResponseData(true, "Sukses mengirim request", null, null));
+  } catch (error) {
+    console.error(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.accTopup = async (request, response) => {
+  try {
+    const existingUser = await userModel.findOne({
+      where: { userID: request.body.userID },
+    });
+
+    if (!existingUser) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
+    }
+
+    const existingTopup = await topupModel.findOne({
+      where: { topupID: request.params.topupID },
+    });
+
+    if (!existingTopup) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "topup tidak ditemukan", null, null));
+    } else if (existingTopup.status === "approved") {
+      return response
+        .status(400)
+        .send(ResponseData(false, "topup sudah dibayar", null, null));
+    }
+
+    const saldo = existingTopup.saldo;
+    const total = existingUser.saldo += saldo;
+
+    await userModel.update(
+      { saldo: total },
+      { where: { userID: existingUser.userID } }
+    );
+
+    await topupModel.update(
+      { status: "approved" },
+      { where: { topupID: existingTopup.topupID } }
+    );
+
+    const responseData = {
+      topupID: existingTopup.topupID,
+      status: "approved",
+      username: existingUser.username,
+      saldo: saldo,
+    };
+
+    return response
+      .status(200)
+      .send(
+        ResponseData(
+          true,
+          "Sukses mengupdate status data topup",
+          null,
+          responseData
+        )
+      );
   } catch (error) {
     console.error(error);
     return response
