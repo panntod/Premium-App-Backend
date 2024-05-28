@@ -1,4 +1,5 @@
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const express = require(`express`);
 const cors = require(`cors`);
 const app = express();
@@ -12,15 +13,16 @@ app.use(
   }),
 );
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const indexRoute = require("./routes/index");
 app.use(indexRoute);
 
 app.listen(PORT, () => {
   console.log(
-    chalk.blue("[INFO]") + " Server of premium apps runs on port 8000 🚀",
+    `${chalk.blue("[INFO]")} Server of premium apps runs on http://localhost:${PORT} 🚀`,
   );
 });
