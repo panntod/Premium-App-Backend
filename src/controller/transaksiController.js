@@ -119,7 +119,7 @@ exports.getAllTransaksi = async (_, response) => {
 
 exports.getTransaksiById = async (request, response) => {
   try {
-    const userID = request.params.userID;
+    const userID = request.params.id;
     const dataTransaksi = await transaksiModel.findAll({
       include: [
         {
@@ -230,7 +230,7 @@ exports.updateStatusTransaksi = async (request, response) => {
     }
 
     const existingTransaksi = await transaksiModel.findOne({
-      where: { transaksiID: request.params.transaksiID },
+      where: { transaksiID: request.params.id },
       include: {
         model: detailTransaksiModel,
         as: "detailTransaksi",

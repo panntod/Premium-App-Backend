@@ -2,7 +2,7 @@ const express = require(`express`);
 const router = express.Router();
 
 const aplikasiController = require(`../controller/aplikasiController`);
-const { adminOnly, authorization } = require("../middlewares/authValidation");
+const { adminOnly, authorization } = require("../middlewares/auth");
 
 router.get("/", aplikasiController.getAllApp);
 router.get("/statistik", aplikasiController.getStatistik);

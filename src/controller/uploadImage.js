@@ -9,13 +9,13 @@ const createDirectory = (directoryPath) => {
 };
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_, __, cb) => {
     const destinationPath = path.join(__dirname, "../images");
     createDirectory(destinationPath);
     cb(null, destinationPath);
   },
 
-  filename: (req, file, cb) => {
+  filename: (_, file, cb) => {
     cb(null, `images-${Date.now()}${path.extname(file.originalname)}`);
   },
 });

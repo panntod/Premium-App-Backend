@@ -1,17 +1,17 @@
 const express = require(`express`);
 const router = express.Router();
 const transaksiController = require(`../controller/transaksiController`);
-const { adminOnly, authorization } = require("../middlewares/authValidation");
+const { adminOnly, authorization } = require("../middlewares/auth");
 const { transactionValidation } = require("../middlewares/validation");
 
 router.get("/", authorization, adminOnly, transaksiController.getAllTransaksi);
 router.get(
-  "/find/:userID",
+  "/find/:id",
   authorization,
   transaksiController.getTransaksiById,
 );
 router.post(
-  "/filterTransaksi",
+  "/filter",
   authorization,
   transaksiController.filterTransaksi,
 );
@@ -22,15 +22,9 @@ router.post(
   transaksiController.addTransaksi,
 );
 router.put(
-  "/:transaksiID",
+  "/:id",
   authorization,
   transaksiController.updateStatusTransaksi,
-);
-router.delete(
-  "/:transaksiID",
-  authorization,
-  adminOnly,
-  transaksiController.deleteTransaksi,
 );
 
 module.exports = router;

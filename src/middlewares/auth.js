@@ -37,17 +37,18 @@ exports.authentication = async (request, response) => {
 
     const token = GenerateToken(dataUser);
 
-    const responseData = {
-      id: dataUser.id,
-      nama: dataUser.nama,
-      role: dataUser.role,
-      username: dataUser.username,
-      token: token,
-    };
+    response.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "none",
+    });
 
-    return response
-      .status(200)
-      .send(ResponseData(true, "Login Berhasil", null, responseData));
+    return response.status(200).send(
+      ResponseData(true, "Login Berhasil", null, {
+        ...dataUser,
+        token: token,
+      })
+    );
   } catch (error) {
     console.log(error);
     return response
@@ -58,15 +59,7 @@ exports.authentication = async (request, response) => {
 
 exports.authorization = async (request, response, next) => {
   try {
-    let authToken = request.headers.authorization;
-
-    if (!authToken) {
-      return response
-        .status(404)
-        .send(ResponseData(false, "Token Tidak Ditemukan", null, null));
-    }
-
-    let tokenKey = authToken.split(" ")[1];
+    const tokenKey = request.cookies.token || request.headers.authorization?.split("Bearer ")[1];
 
     const decodedToken = ExtractToken(tokenKey);
     if (!decodedToken) {
