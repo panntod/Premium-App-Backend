@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "userTransaksi",
       });
       this.hasMany(models.topup, {
-        foreignKey: "userID",
+        foreignKey: "username",
         as: "userTopup",
       });
     }
@@ -23,7 +23,11 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: () => uuidv4(),
         primaryKey: true,
       },
-      username: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       password: DataTypes.STRING,
       nama: DataTypes.STRING,
       saldo: DataTypes.BIGINT,

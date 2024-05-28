@@ -1,7 +1,7 @@
-const { user: userModel , topup:topupModel} = require(`../db/models/index`);
+const { user: userModel, topup: topupModel } = require(`../db/models/index`);
 const { ResponseData } = require("../helpers/ResponseHelper");
 const { PasswordHashing } = require("../helpers/PasswordHelper");
-const { Op } = require(`sequelize`);
+const { Op, where } = require(`sequelize`);
 
 exports.getAllUser = async (_, response) => {
   try {
@@ -11,7 +11,7 @@ exports.getAllUser = async (_, response) => {
     return response
       .status(200)
       .send(
-        ResponseData(true, "Sukses mengambil seluruh data user", null, users),
+        ResponseData(true, "Sukses mengambil seluruh data user", null, users)
       );
   } catch (error) {
     console.log(error);
@@ -34,7 +34,7 @@ exports.findUser = async (request, response) => {
       },
     });
 
-    if (!users.length||!keyword) {
+    if (!users.length || !keyword) {
       return response
         .status(404)
         .send(ResponseData(true, "User tidak ditemukan", null, null));
@@ -133,6 +133,103 @@ exports.deleteUser = async (request, response) => {
   }
 };
 
+exports.getMe = async (request, response) => {
+  try {
+    const usernameUser = request.body.username;
+
+    if (!usernameUser) {
+      return response
+        .status(401)
+        .send(ResponseData(false, "Parameter Harus Valid", null, null));
+    }
+
+    const findUser = await userModel.findOne({
+      where: { username: usernameUser },
+    });
+
+    if (!findUser) {
+      return response
+        .status(401)
+        .send(ResponseData(false, "Anda Belum Login", null, null));
+    }
+
+    const responseData = {
+      userID: findUser.userID,
+      username: findUser.username,
+      nama: findUser.nama,
+      saldo: findUser.saldo,
+      role: findUser.role,
+    };
+
+    return response
+      .status(201)
+      .send(
+        ResponseData(true, "Sukses menambahkan saldo user", null, responseData)
+      );
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+exports.getAllTopup = async (_, response) => {
+  try {
+    let topup = await topupModel.findAll({
+      order: [["createdAt", "DESC"]],
+    });
+    return response
+      .status(200)
+      .send(
+        ResponseData(true, "Sukses mengambil seluruh data topup", null, topup)
+      );
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
+
+exports.topUpSaldoAdmin = async (request, response) => {
+  try {
+    const userID = request.params.id;
+    const existingUser = await userModel.findOne({ where: { userID: userID } });
+
+    if (!existingUser) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "User tidak ditemukan", null, null));
+    }
+
+    const additionalSaldo = parseFloat(request.body.saldo);
+
+    if (isNaN(additionalSaldo) || additionalSaldo <= 0) {
+      return response
+        .status(400)
+        .send(ResponseData(false, "Jumlah top up tidak valid", null, null));
+    }
+
+    const total = existingUser.saldo += additionalSaldo;
+
+    await userModel.update(
+      { saldo: total },
+      { where: { userID: existingUser.userID } }
+    );
+
+    return response
+      .status(201)
+      .send(ResponseData(true, "Sukses topup", null, null));
+  } catch (error) {
+    console.error(error);
+    return response
+      .status(500)
+      .send(ResponseData(false, error.message, error, null));
+  }
+};
+
 exports.topUpSaldo = async (request, response) => {
   try {
     const username = request.params.username;
@@ -153,14 +250,15 @@ exports.topUpSaldo = async (request, response) => {
     }
 
     const newtopup = {
-      userID:findUser.userID,
-      saldo:additionalSaldo
-    }
-    await topupModel.create(newtopup)
+      username: findUser.username,
+      saldo: additionalSaldo,
+    };
+
+    await topupModel.create(newtopup);
 
     return response
       .status(201)
-      .send(ResponseData(true, "Sukses mengirim request", null, null));
+      .send(ResponseData(true, "Sukses mengirim request topup", null, null));
   } catch (error) {
     console.error(error);
     return response
@@ -171,8 +269,22 @@ exports.topUpSaldo = async (request, response) => {
 
 exports.accTopup = async (request, response) => {
   try {
+    const existingTopup = await topupModel.findOne({
+      where: { topupID: request.params.id },
+    });
+
+    if (!existingTopup) {
+      return response
+        .status(404)
+        .send(ResponseData(false, "Topup tidak ditemukan", null, null));
+    } else if (existingTopup.status === "approved") {
+      return response
+        .status(400)
+        .send(ResponseData(false, "Topup sudah dikonfirmasi", null, null));
+    }
+
     const existingUser = await userModel.findOne({
-      where: { userID: request.body.userID },
+      where: { username: existingTopup.username },
     });
 
     if (!existingUser) {
@@ -181,22 +293,8 @@ exports.accTopup = async (request, response) => {
         .send(ResponseData(false, "User tidak ditemukan", null, null));
     }
 
-    const existingTopup = await topupModel.findOne({
-      where: { topupID: request.params.topupID },
-    });
-
-    if (!existingTopup) {
-      return response
-        .status(404)
-        .send(ResponseData(false, "topup tidak ditemukan", null, null));
-    } else if (existingTopup.status === "approved") {
-      return response
-        .status(400)
-        .send(ResponseData(false, "topup sudah dibayar", null, null));
-    }
-
     const saldo = existingTopup.saldo;
-    const total = existingUser.saldo += saldo;
+    const total = (existingUser.saldo += saldo);
 
     await userModel.update(
       { saldo: total },
@@ -233,41 +331,15 @@ exports.accTopup = async (request, response) => {
   }
 };
 
-exports.getMe = async (request, response) => {
+exports.deleteTopup = async (request, response) => {
   try {
-    const usernameUser = request.body.username;
-
-    if (!usernameUser) {
-      return response
-        .status(401)
-        .send(ResponseData(false, "Parameter Harus Valid", null, null));
-    }
-
-    const findUser = await userModel.findOne({
-      where: { username: usernameUser },
-    });
-
-    if (!findUser) {
-      return response
-        .status(401)
-        .send(ResponseData(false, "Anda Belum Login", null, null));
-    }
-
-    const responseData = {
-      userID: findUser.userID,
-      username: findUser.username,
-      nama: findUser.nama,
-      saldo: findUser.saldo,
-      role: findUser.role,
-    };
-
+    const topupID = request.params.id;
+    await topupModel.destroy({ where: { topupID: topupID } });
     return response
       .status(201)
-      .send(
-        ResponseData(true, "Sukses menambahkan saldo user", null, responseData),
-      );
+      .send(ResponseData(true, "Sukses menghapus data topup", null, null));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return response
       .status(500)
       .send(ResponseData(false, error.message, error, null));
